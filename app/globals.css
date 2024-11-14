@@ -1,21 +1,44 @@
-@tailwind base;
+/* @tailwind base;
 @tailwind components;
-@tailwind utilities;
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@tailwind utilities; */
+@layer tailwind-base, semi,
+  tailwind-components, tailwind-utils;
+@layer tailwind-base {
+  @tailwind base;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@layer tailwind-components {
+  @tailwind components;
+}
+
+@layer tailwind-utils {
+  @tailwind utilities;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
+  color: var(--semi-color-text-0);
+  background-color: var(--semi-color-bg-0);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+select{
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="Gray" d="M7 10l5 5 5-5z"/></svg>');
+  background-repeat: no-repeat;
+  background-position: right .1rem center;
+  background-size: 1.25rem 1.25rem;
+  padding-right: 1.25rem;
+
+  background-color: rgba(61,37,20,0.08);
+  border-radius: .5rem;
+  border: none;
+  color: #2e2b29;
+  font-family: inherit;
+  font-size: .875rem;
+  font-weight: 500;
+  line-height: 1.15;
+  padding: .375rem .625rem;
+  transition: all .2s cubic-bezier(.65, .05, .36, 1);
 }
