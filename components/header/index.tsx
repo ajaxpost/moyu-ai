@@ -1,6 +1,6 @@
+import { cn } from '@/lib/utils';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { Layout } from '@douyinfe/semi-ui';
-import clsx from 'clsx';
 import { CSSProperties } from 'react';
 import { ThemeBtn } from '../theme';
 
@@ -18,7 +18,7 @@ export default function HeaderComponent({
   return (
     <Header
       style={style}
-      className={clsx(
+      className={cn(
         className,
         'sticky top-0 flex h-16 items-center justify-between border-b border-[var(--semi-color-border)] px-8 leading-[64px]'
       )}

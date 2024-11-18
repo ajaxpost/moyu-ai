@@ -979,6 +979,11 @@
   resolved "https://registry.npmmirror.com/@tiptap/extension-heading/-/extension-heading-2.9.1.tgz#83a2cf3174b6e3da66298b5cd424aca8dc4738bb"
   integrity sha512-SjZowzLixOFaCrV2cMaWi1mp8REK0zK1b3OcVx7bCZfVSmsOETJyrAIUpCKA8o60NwF7pwhBg0MN8oXlNKMeFw==
 
+"@tiptap/extension-highlight@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-highlight/-/extension-highlight-2.9.1.tgz#73b6b0ed45d2b7eb6bce872e1cb7d72cd49c00b8"
+  integrity sha512-ro3bARRgxb4v8w6fPVfG1kO2UWtLgKI5ESfsQ9CqiZuRkZdRKhM5ZpXPIky28Pn7CxhDUSXBXS/MhvP0VuhMJQ==
+
 "@tiptap/extension-history@^2.9.1":
   version "2.9.1"
   resolved "https://registry.npmmirror.com/@tiptap/extension-history/-/extension-history-2.9.1.tgz#7e60f4add5cdcbfa18a2edb7e9571c72f4c9c31a"
@@ -988,6 +993,11 @@
   version "2.9.1"
   resolved "https://registry.npmmirror.com/@tiptap/extension-horizontal-rule/-/extension-horizontal-rule-2.9.1.tgz#90acbd931aadd52affa3f8ac2aecead70839b342"
   integrity sha512-ydUhABeaBI1CoJp+/BBqPhXINfesp1qMNL/jiDcMsB66fsD4nOyphpAJT7FaRFZFtQVF06+nttBtFZVkITQVqg==
+
+"@tiptap/extension-image@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-image/-/extension-image-2.9.1.tgz#774d8c43329920fb0f71df8eebacfeb9d1ddc823"
+  integrity sha512-aGqJnsuS8oagIhsx7wetm8jw4NEDsOV0OSx4FQ4VPlUqWlnzK0N+erFKKJmXTdAxL8PGzoPSlITFH63MV3eV3Q==
 
 "@tiptap/extension-italic@^2.9.1":
   version "2.9.1"
@@ -1009,10 +1019,20 @@
   resolved "https://registry.npmmirror.com/@tiptap/extension-paragraph/-/extension-paragraph-2.9.1.tgz#1cce648545b7b03d9af6fb393b0af602cf567135"
   integrity sha512-JOmT0xd4gd3lIhLwrsjw8lV+ZFROKZdIxLi0Ia05XSu4RLrrvWj0zdKMSB+V87xOWfSB3Epo95zAvnPox5Q16A==
 
+"@tiptap/extension-placeholder@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-placeholder/-/extension-placeholder-2.9.1.tgz#ed2e56d164615a9ce6f0e58141ac83d3735233dc"
+  integrity sha512-Q/w3OOg/C6jGBf4QKEWKF9k+iaCQCgPoaIg2IDTPx8QmaxRfgoVE5Csd+oTOY/brdmSNXOxykZWEci6OJP+MbA==
+
 "@tiptap/extension-strike@^2.9.1":
   version "2.9.1"
   resolved "https://registry.npmmirror.com/@tiptap/extension-strike/-/extension-strike-2.9.1.tgz#8c8553e81696e6c30a6801a1cae6afaa4c37f002"
   integrity sha512-V5aEXdML+YojlPhastcu7w4biDPwmzy/fWq0T2qjfu5Te/THcqDmGYVBKESBm5x6nBy5OLkanw2O+KHu2quDdg==
+
+"@tiptap/extension-text-align@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-text-align/-/extension-text-align-2.9.1.tgz#5f7920a16c95b283c961cf1e22357bdc355c1626"
+  integrity sha512-oUp0XnwJpAImcOVV68vsY2CpkHpRZ3gzWfIRTuy+aYitQim3xDKis/qfWQUWZsANp9/TZ0VyjtkZxNMwOfcu1g==
 
 "@tiptap/extension-text-style@^2.9.1":
   version "2.9.1"
@@ -1023,6 +1043,11 @@
   version "2.9.1"
   resolved "https://registry.npmmirror.com/@tiptap/extension-text/-/extension-text-2.9.1.tgz#e4cda144b0af916ee0dafb700f833cd40eeae6d9"
   integrity sha512-3wo9uCrkLVLQFgbw2eFU37QAa1jq1/7oExa+FF/DVxdtHRS9E2rnUZ8s2hat/IWzvPUHXMwo3Zg2XfhoamQpCA==
+
+"@tiptap/extension-typography@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-typography/-/extension-typography-2.9.1.tgz#ffc1a7374e93c1661e828815b45286340435218d"
+  integrity sha512-HX0kghh+Gmlp5FsVVGmQNRxxA+aErLBgmKVspycJ3UHzAkyzsdx4qM19KCZ3pMOI+kxcXF9cMh3QxJYJ+OQ7wg==
 
 "@tiptap/pm@^2.9.1":
   version "2.9.1"
@@ -1085,6 +1110,11 @@
     "@tiptap/extension-text" "^2.9.1"
     "@tiptap/extension-text-style" "^2.9.1"
     "@tiptap/pm" "^2.9.1"
+
+"@tiptap/suggestion@^2.9.1":
+  version "2.9.1"
+  resolved "https://registry.npmmirror.com/@tiptap/suggestion/-/suggestion-2.9.1.tgz#e83cfadd47a7c45d75d26c8fbf7dac6d62022d79"
+  integrity sha512-MMxwpbtocxUsbmc8qtFY1AQYNTW5i/M4aNSv9zsKKRISaS5hMD7XVrw2eod0x0yEqZU3izLiPDZPmgr8glF+jQ==
 
 "@types/acorn@^4.0.0":
   version "4.0.6"
@@ -2614,6 +2644,11 @@ globalthis@^1.0.3, globalthis@^1.0.4:
     define-properties "^1.2.1"
     gopd "^1.0.1"
 
+goober@^2.1.10:
+  version "2.1.16"
+  resolved "https://registry.npmmirror.com/goober/-/goober-2.1.16.tgz#7d548eb9b83ff0988d102be71f271ca8f9c82a95"
+  integrity sha512-erjk19y1U33+XAMe1VTvIONHYoSqE4iS7BYUZfHaqeohLmnC0FdxEh7rQU+6MZ4OajItzjZFSRtVANrQwNq6/g==
+
 gopd@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmmirror.com/gopd/-/gopd-1.0.1.tgz#29ff76de69dac7489b7c0918a5788e56477c332c"
@@ -3205,6 +3240,11 @@ lru-cache@^10.2.0:
   version "10.4.3"
   resolved "https://registry.npmmirror.com/lru-cache/-/lru-cache-10.4.3.tgz#410fc8a17b70e598013df257c2446b7f3383f119"
   integrity sha512-JNAzZcXrCt42VGLuYz0zfAzDfAvJWW6AfYlDBQyDV5DClI2m5sAmK+OIO7s59XfsRsWHp02jAJrRadPRGTt6SQ==
+
+lucide-react@^0.457.0:
+  version "0.457.0"
+  resolved "https://registry.npmmirror.com/lucide-react/-/lucide-react-0.457.0.tgz#46c2c6e2f0488f37de671ad85c3295a62a428a06"
+  integrity sha512-IdrHIdnmtdDMBkgMD7RoVn0C/t+/j1aNv4SiNkFA0Cq3pOzRRbBDwslcpVy+YVWF1DcjeYJ91gXXPeGhMJ/W0g==
 
 map-obj@^4.1.0:
   version "4.3.0"
@@ -4662,6 +4702,13 @@ react-draggable@^4.0.3:
     clsx "^1.1.1"
     prop-types "^15.8.1"
 
+react-hot-toast@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.npmmirror.com/react-hot-toast/-/react-hot-toast-2.4.1.tgz#df04295eda8a7b12c4f968e54a61c8d36f4c0994"
+  integrity sha512-j8z+cQbWIM5LY37pR6uZR6D4LfseplqnuAO4co4u8917hBUvXlEqyP1ZzqVLcqoyUesZZv/ImreoCeHVDpE5pQ==
+  dependencies:
+    goober "^2.1.10"
+
 react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.npmmirror.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -5235,6 +5282,11 @@ swr@^2.2.0:
   dependencies:
     client-only "^0.0.1"
     use-sync-external-store "^1.2.0"
+
+tailwind-merge@^2.5.4:
+  version "2.5.4"
+  resolved "https://registry.npmmirror.com/tailwind-merge/-/tailwind-merge-2.5.4.tgz#4bf574e81fa061adeceba099ae4df56edcee78d1"
+  integrity sha512-0q8cfZHMu9nuYP/b5Shb7Y7Sh1B7Nnl5GqNr1U+n2p6+mybvRtayrQ+0042Z5byvTA8ihjlP8Odo8/VnHbZu4Q==
 
 tailwindcss@^3.4.1:
   version "3.4.14"

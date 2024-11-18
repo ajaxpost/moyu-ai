@@ -101,6 +101,41 @@ li > ol {
   font-size: inherit;
   font-family: inherit;
   line-height: inherit;
+  margin: 0;
+}
+
+.tiptap code{
+  color: #e5e7eb;
+  font-size: .875em;
+  background-color: #1f2937;
+  padding: .125em .25em;
+  margin: 0 .25em;
+  border-radius: .25em;
+  font-weight: 400;
+}
+
+.tiptap p.is-empty::before{
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.tiptap .node-imageUpload:hover{
+  --tw-border-opacity:0.3;
+}
+
+.tiptap .node-imageUpload{
+  transition: border .16s cubic-bezier(.45, .05, .55, .95);
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  border-radius: .25rem;
+  border-width: 2px;
+  border-style: dotted;
+  border-color: rgb(0 0 0 / var(--tw-border-opacity));
+  --tw-border-opacity: 0.1;
+  padding: .5rem;
 }
 
 /* Code styling */
