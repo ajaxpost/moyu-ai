@@ -1,8 +1,11 @@
 import { Zap } from "lucide-react";
 import { Button } from "../ui/button";
 import Link from "next/link";
+import { auth } from "@/auth";
 
-export default function Context() {
+export default async function Context() {
+  const session = await auth();
+
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
       <div className="container px-4 md:px-6 relative z-10">
@@ -19,10 +22,10 @@ export default function Context() {
             </p>
           </div>
           <div className="flex justify-center space-x-4">
-            <Link href="/work">
+            <Link href={session ? "/work" : `/api/auth/signin?callbackUrl`}>
               <Button className="h-11 rounded-md px-8 text-base">
                 <Zap />
-                开始使用
+                {session ? "开始使用" : "登录/注册"}
               </Button>
             </Link>
           </div>
