@@ -5,7 +5,11 @@ import {
 } from "@/components/ui/resizable";
 import Sider from "@/components/work/sider";
 
-export default function LayoutComponent({
+/**
+ * 如果存在动态路由参数，将 layout 放在内部，当参数变化时，会导致重新渲染，并且 client state 会还原
+ * 这里我们放在外面
+ */
+export default async function LayoutComponent({
   children,
 }: Readonly<{
   children: React.ReactNode;

@@ -15,9 +15,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { auth, signOut } from "@/auth";
+import { getMenus } from "@/actions/menu";
 
 export default async function Sider() {
   const session = await auth();
+  const list = await getMenus();
+
   return (
     <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
       <div>
@@ -33,7 +36,7 @@ export default async function Sider() {
       </div>
 
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />
-      <Menu />
+      <Menu list={list || []} />
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />
       <div>
         <AlertDialog>
