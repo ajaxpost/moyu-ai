@@ -35,6 +35,9 @@ importers:
       '@supabase/ssr':
         specifier: ^0.5.2
         version: 0.5.2(@supabase/supabase-js@2.47.7)
+      '@supabase/supabase-js':
+        specifier: ^2.47.7
+        version: 2.47.7
       '@tiptap/core':
         specifier: ^2.10.3
         version: 2.10.3(@tiptap/pm@2.10.3)
@@ -146,6 +149,9 @@ importers:
       tippy.js:
         specifier: ^6.3.7
         version: 6.3.7
+      y-prosemirror:
+        specifier: ^1.2.15
+        version: 1.2.15(prosemirror-model@1.24.1)(prosemirror-state@1.4.3)(prosemirror-view@1.37.1)(y-protocols@1.0.6(yjs@13.6.20))(yjs@13.6.20)
       yjs:
         specifier: ^13.6.18
         version: 13.6.20
