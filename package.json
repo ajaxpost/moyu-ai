@@ -57,7 +57,7 @@
     "tailwindcss-animate": "^1.0.7",
     "tippy.js": "^6.3.7",
     "y-prosemirror": "^1.2.15",
-    "yjs": "^13.6.18",
+    "yjs": "^13.6.20",
     "zustand": "^5.0.2"
   },
   "devDependencies": {
