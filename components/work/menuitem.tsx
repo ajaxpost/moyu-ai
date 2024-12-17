@@ -1,5 +1,5 @@
 "use client";
-import { Dispatch, FC, SetStateAction, useEffect } from "react";
+import { FC, startTransition, use, MouseEvent, useLayoutEffect } from "react";
 import { Ellipsis, Plus, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -8,43 +8,79 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import clsx from "clsx";
-import { useRouter } from "next/navigation";
+import { MenuContext } from "@/context";
+import { MenuOptimisticEnum } from "@/shared/enum";
+import { createDoc, delDoc } from "@/actions/menu";
+import { useParams, useRouter } from "next/navigation";
+import { useStore } from "@/store/menu";
 
 interface IProps {
   id: number;
   title: string;
   level: number;
-  activeId: number;
-  setActiveId: Dispatch<SetStateAction<number>>;
 }
 
-const MenuItem: FC<IProps> = ({ id, title, level, activeId, setActiveId }) => {
+const MenuItem: FC<IProps> = ({ id, title, level }) => {
+  const { id: _id } = useParams();
   const router = useRouter();
+  const { addOptimisticMenus, doList, setSelectedKeys } = use(MenuContext);
+  const activeItem = useStore((state) => state.activeItem);
 
-  useEffect(() => {
-    router.prefetch(`/work/${id}`);
-  }, [id]);
+  useLayoutEffect(() => {
+    router.prefetch("/work/" + id);
+  }, []);
+
+  const handlerClick = (_id?: string) => {
+    router.push("/work/" + (_id || id));
+    useStore.setState({
+      activeItem: {
+        id: Number(_id) || id,
+        title,
+      },
+    });
+  };
+
+  const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    startTransition(async () => {
+      addOptimisticMenus({ type: MenuOptimisticEnum.DEL, pid: id });
+      const data = await delDoc([id]);
+      if (!data.error) {
+        doList();
+      }
+    });
+  };
+
+  const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
+    setSelectedKeys((o) => [...o, id]);
+    startTransition(async () => {
+      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, pid: id });
+      const data = await createDoc(id);
+      if (!data?.error) {
+        doList();
+      }
+    });
+  };
+
   return (
     <div>
       <div
         className={clsx(
           "text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3",
           {
-            "bg-active": id === Number(activeId),
-            "font-bold": id === Number(activeId),
-            "text-secondary-foreground": id === Number(activeId),
+            "bg-active": id === Number(activeItem?.id ?? _id),
+            "font-bold": id === Number(activeItem?.id ?? _id),
+            "text-secondary-foreground": id === Number(activeItem?.id ?? _id),
           }
         )}
-        onClick={() => {
-          setActiveId(id);
-          window.history.replaceState(null, "", String(id));
-        }}
+        onClick={() => handlerClick()}
       >
         <div className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center">
           <span
             className="truncate flex-auto"
             style={{
-              marginLeft: (level || 1) * 12,
+              marginLeft: (level || 1) * 16,
             }}
           >
             {title || "<无标题>"}
@@ -58,14 +94,20 @@ const MenuItem: FC<IProps> = ({ id, title, level, activeId, setActiveId }) => {
               </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
-              <DropdownMenuItem className="text-destructive cursor-pointer">
+              <DropdownMenuItem
+                className="text-destructive cursor-pointer"
+                onClick={handlerDel}
+              >
                 <Trash2 className="h-4 w-4" />
                 删除
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-        <div className="cursor-pointer rounded-full p-1 hover:bg-active invisible group-hover:visible">
+        <div
+          onClick={handlerAdd}
+          className="cursor-pointer rounded-full p-1 hover:bg-active invisible group-hover:visible"
+        >
           <Plus className="h-4 w-4" />
         </div>
       </div>
