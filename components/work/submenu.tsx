@@ -21,14 +21,15 @@ import { DocumentVO } from "@/shared";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
+import { nanoid } from "nanoid";
 
 interface IProps {
-  id: number;
+  id: string;
   title: string;
   level: number;
   child: DocumentVO[];
   actived: boolean;
-  onSelect: (key: number) => void;
+  onSelect: (key: string) => void;
 }
 
 const SubMenu: FC<PropsWithChildren<IProps>> = ({
@@ -59,8 +60,9 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
     e.stopPropagation();
     startTransition(async () => {
       setSelectedKeys((o) => [...o, id]);
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, pid: id });
-      const data = await createDoc(id);
+      const nid = nanoid();
+      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id: nid, pid: id });
+      const data = await createDoc(nid, id);
       if (!data?.error) {
         doList();
       }
@@ -83,9 +85,9 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
         className={clsx(
           "text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3",
           {
-            "bg-active": id === Number(activeItem?.id ?? _id),
-            "font-bold": id === Number(activeItem?.id ?? _id),
-            "text-secondary-foreground": id === Number(activeItem?.id ?? _id),
+            "bg-active": id === (activeItem?.id ?? _id),
+            "font-bold": id === (activeItem?.id ?? _id),
+            "text-secondary-foreground": id === (activeItem?.id ?? _id),
           }
         )}
       >
