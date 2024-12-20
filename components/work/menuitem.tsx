@@ -13,9 +13,10 @@ import { MenuOptimisticEnum } from "@/shared/enum";
 import { createDoc, delDoc } from "@/actions/menu";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
+import { nanoid } from "nanoid";
 
 interface IProps {
-  id: number;
+  id: string;
   title: string;
   level: number;
 }
@@ -34,7 +35,7 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
     router.push("/work/" + (_id || id));
     useStore.setState({
       activeItem: {
-        id: Number(_id) || id,
+        id: _id || id,
         title,
       },
     });
@@ -55,8 +56,9 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
     e.stopPropagation();
     setSelectedKeys((o) => [...o, id]);
     startTransition(async () => {
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, pid: id });
-      const data = await createDoc(id);
+      const nid = nanoid();
+      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id: nid, pid: id });
+      const data = await createDoc(nid, id);
       if (!data?.error) {
         doList();
       }
@@ -69,9 +71,9 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
         className={clsx(
           "text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3",
           {
-            "bg-active": id === Number(activeItem?.id ?? _id),
-            "font-bold": id === Number(activeItem?.id ?? _id),
-            "text-secondary-foreground": id === Number(activeItem?.id ?? _id),
+            "bg-active": id === (activeItem?.id ?? _id),
+            "font-bold": id === (activeItem?.id ?? _id),
+            "text-secondary-foreground": id === (activeItem?.id ?? _id),
           }
         )}
         onClick={() => handlerClick()}

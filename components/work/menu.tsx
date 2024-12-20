@@ -25,6 +25,7 @@ import { MenuContext } from "@/context";
 import { useParams } from "next/navigation";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
+import { nanoid } from "nanoid";
 
 interface IProps {
   list: DocumentVO[];
@@ -34,51 +35,41 @@ const Menu: FC<IProps> = ({ list }) => {
   const { id } = useParams();
   const [open] = useState<boolean>(true);
   const timeOut = useRef<NodeJS.Timeout | null>(null);
-  const [selectedKeys, setSelectedKeys] = useState<number[]>([]);
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [menus, setMenus] = useState<DocumentVO[]>(getMenuTreeData(list));
   const [optimisticMenus, addOptimisticMenus] = useOptimistic<
     DocumentVO[],
-    { type: MenuOptimisticEnum; pid: number }
-  >(menus, (currentState, { type, pid }) => {
+    { type: MenuOptimisticEnum; id?: string; pid?: string }
+  >(menus, (currentState, { type, id, pid }) => {
     if (type === MenuOptimisticEnum.ADD) {
-      return addMenuItem(currentState, pid);
+      return addMenuItem(currentState, id!, pid);
     }
     if (type === MenuOptimisticEnum.DEL)
       return removeMenuItem(currentState, pid);
     return currentState;
   });
 
-  // useEffect(() => {
-  //   const supabase = createClient();
-  //   const channel = supabase
-  //     .channel("room-1")
-  //     .on("broadcast", { event: "test" }, (payload) => {
-  //       console.log(payload);
-  //     })
-  //     .subscribe();
-  //   return () => {
-  //     supabase.removeChannel(channel);
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (!id) return;
-    const item = findMenuItem(menus, Number(id));
+    const item = findMenuItem(menus, String(id));
     if (!item) return;
     useStore.setState({
       activeItem: item,
     });
+    if (item.parent_id) {
+      setSelectedKeys([item.parent_id]);
+    }
   }, [menus]);
 
   useEffect(() => {
     emitter.on(EventEnum.MENU_UPDATE_TITLE, ({ title, id, callback }) => {
-      const data = updateTitle(menus, Number(id), title);
+      const data = updateTitle(menus, id, title);
       setMenus(data);
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       timeOut.current && clearTimeout(timeOut.current);
       timeOut.current = setTimeout(() => {
         callback();
-      }, 800);
+      }, 500);
     });
     return () => {
       emitter.removeListener(EventEnum.MENU_UPDATE_TITLE);
@@ -91,7 +82,7 @@ const Menu: FC<IProps> = ({ list }) => {
     return res;
   };
 
-  const onSelect = (key: number) => {
+  const onSelect = (key: string) => {
     if (selectedKeys.some((k) => k === key)) {
       setSelectedKeys(selectedKeys.filter((o) => o !== key));
     } else {
@@ -99,7 +90,7 @@ const Menu: FC<IProps> = ({ list }) => {
     }
   };
   const renderMenu = (data: DocumentVO[], level: number = 0) => {
-    return data.map((item) => {
+    return data.map((item, key) => {
       if (item.children) {
         return (
           <SubMenu
@@ -116,15 +107,21 @@ const Menu: FC<IProps> = ({ list }) => {
         );
       }
       return (
-        <MenuItem key={item.id} level={level} id={item.id} title={item.title} />
+        <MenuItem
+          key={item.id + "_" + key}
+          level={level}
+          id={item.id}
+          title={item.title}
+        />
       );
     });
   };
 
   const handlerAddMenuItem = () => {
     st(async () => {
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, pid: 0 });
-      const data = await createDoc(0);
+      const id = nanoid();
+      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id });
+      const data = await createDoc(id);
       if (!data?.error) {
         doList();
       }
