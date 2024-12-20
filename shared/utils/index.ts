@@ -2,9 +2,10 @@ import { DocumentVO } from "../entity";
 import { cloneDeep } from "lodash-es";
 
 export function getMenuTreeData(data: DocumentVO[]): DocumentVO[] {
+  const cloneDate = cloneDeep(data);
   const _data: DocumentVO[] = [];
   const result: DocumentVO[] = [];
-  data.forEach((item) => {
+  cloneDate.forEach((item) => {
     if (!item.parent_id) {
       result.push(item);
     } else {
@@ -13,7 +14,7 @@ export function getMenuTreeData(data: DocumentVO[]): DocumentVO[] {
   });
 
   _data.forEach((item) => {
-    const parent = data.find((o) => item.parent_id === o.id);
+    const parent = cloneDate.find((o) => item.parent_id === o.id);
     if (!parent) return;
     if (!parent.children) {
       parent.children = [];
@@ -26,9 +27,9 @@ export function getMenuTreeData(data: DocumentVO[]): DocumentVO[] {
 
 export function getMenuSelectedKeys(
   data: Omit<DocumentVO, "children">[],
-  id: number
+  id: string
 ) {
-  const selectedKeys: number[] = [];
+  const selectedKeys: string[] = [];
   const find = data.find((o) => o.id === id);
   if (!find?.parent_id) return selectedKeys;
   if (find.parent_id) {
@@ -40,19 +41,18 @@ export function getMenuSelectedKeys(
   return selectedKeys;
 }
 
-export function addMenuItem(data: DocumentVO[], pid: number) {
+export function addMenuItem(data: DocumentVO[], id: string, pid?: string) {
   const _data = cloneDeep(data);
   const defaultItem: DocumentVO = {
-    id: Math.random(),
+    id,
     parent_id: pid,
     title: "",
     creator: "",
-    created_at: "",
     creator_email: "",
-    content: "",
+    created_at: "",
     updated_at: "",
   };
-  if (pid === 0) return [..._data, defaultItem];
+  if (!pid) return [..._data, defaultItem];
   const findChild = (data: DocumentVO[]) => {
     data.forEach((item) => {
       if (item.id === pid) {
@@ -70,7 +70,7 @@ export function addMenuItem(data: DocumentVO[], pid: number) {
   return _data;
 }
 
-export function removeMenuItem(data: DocumentVO[], id: number) {
+export function removeMenuItem(data: DocumentVO[], id?: string) {
   const _data = cloneDeep(data);
   const removeItem = (data: DocumentVO[]) => {
     data.forEach((item, index) => {
@@ -87,7 +87,7 @@ export function removeMenuItem(data: DocumentVO[], id: number) {
   return _data;
 }
 
-export function updateTitle(data: DocumentVO[], id: number, title: string) {
+export function updateTitle(data: DocumentVO[], id: string, title: string) {
   const _data = cloneDeep(data);
   const updateItem = (data: DocumentVO[]) => {
     data.forEach((item) => {
@@ -104,7 +104,7 @@ export function updateTitle(data: DocumentVO[], id: number, title: string) {
   return _data;
 }
 
-export function findMenuItem(data: DocumentVO[], id: number) {
+export function findMenuItem(data: DocumentVO[], id: string) {
   const findItem = (data: DocumentVO[]): DocumentVO | undefined => {
     for (let i = 0; i < data.length; i++) {
       const item = data[i];
