@@ -1,19 +1,20 @@
-"use client";
-import { FC, startTransition, use, MouseEvent, useLayoutEffect } from "react";
-import { Ellipsis, Plus, Trash2 } from "lucide-react";
+'use client';
+import { FC, startTransition, use, MouseEvent } from 'react';
+import { Ellipsis, Plus, Trash2 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import clsx from "clsx";
-import { MenuContext } from "@/context";
-import { MenuOptimisticEnum } from "@/shared/enum";
-import { createDoc, delDoc } from "@/actions/menu";
-import { useParams, useRouter } from "next/navigation";
-import { useStore } from "@/store/menu";
-import { nanoid } from "nanoid";
+} from '@/components/ui/dropdown-menu';
+import clsx from 'clsx';
+import { MenuContext } from '@/context';
+import { MenuOptimisticEnum } from '@/shared/enum';
+import { createDoc } from '@/actions/menu';
+import { useParams, useRouter } from 'next/navigation';
+import { useStore } from '@/store/menu';
+import { nanoid } from 'nanoid';
+import { useDocDel } from '@/hooks/doc/use-doc-action';
 
 interface IProps {
   id: string;
@@ -24,31 +25,26 @@ interface IProps {
 const MenuItem: FC<IProps> = ({ id, title, level }) => {
   const { id: _id } = useParams();
   const router = useRouter();
-  const { addOptimisticMenus, doList, setSelectedKeys } = use(MenuContext);
+  const { addOptimisticMenus, doList, setSelectedKeys, onDelDoc } =
+    use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
-
-  useLayoutEffect(() => {
-    router.prefetch("/work/" + id);
-  }, []);
+  const { trigger } = useDocDel();
 
   const handlerClick = (_id?: string) => {
-    router.push("/work/" + (_id || id));
     useStore.setState({
       activeItem: {
         id: _id || id,
         title,
       },
     });
+    router.push('/work/' + (_id || id));
   };
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    startTransition(async () => {
-      addOptimisticMenus({ type: MenuOptimisticEnum.DEL, pid: id });
-      const data = await delDoc([id]);
-      if (!data.error) {
-        doList();
-      }
+    onDelDoc(id, () => {
+      trigger({ ids: [id] });
+      router.push('/work/0');
     });
   };
 
@@ -69,11 +65,11 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
     <div>
       <div
         className={clsx(
-          "text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3",
+          'text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3',
           {
-            "bg-active": id === (activeItem?.id ?? _id),
-            "font-bold": id === (activeItem?.id ?? _id),
-            "text-secondary-foreground": id === (activeItem?.id ?? _id),
+            'bg-active': id === (activeItem?.id ?? _id),
+            'font-bold': id === (activeItem?.id ?? _id),
+            'text-secondary-foreground': id === (activeItem?.id ?? _id),
           }
         )}
         onClick={() => handlerClick()}
@@ -85,7 +81,7 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
               marginLeft: (level || 1) * 16,
             }}
           >
-            {title || "<无标题>"}
+            {title || '<无标题>'}
           </span>
         </div>
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">

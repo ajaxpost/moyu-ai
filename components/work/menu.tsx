@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   FC,
   useEffect,
@@ -6,26 +6,27 @@ import {
   useState,
   startTransition as st,
   useRef,
-} from "react";
-import { ChevronDown, Plus } from "lucide-react";
-import SubMenu from "./submenu";
-import MenuItem from "./menuitem";
-import { DocumentVO } from "@/shared";
+} from 'react';
+import { ChevronDown, Plus } from 'lucide-react';
+import SubMenu from './submenu';
+import MenuItem from './menuitem';
+import { DocumentVO } from '@/shared';
 import {
   addMenuItem,
   findMenuItem,
   getMenuTreeData,
   removeMenuItem,
   updateTitle,
-} from "@/shared/utils";
-import { getMenus, createDoc } from "@/actions/menu";
-import { Button } from "../ui/button";
-import { MenuOptimisticEnum } from "@/shared/enum";
-import { MenuContext } from "@/context";
-import { useParams } from "next/navigation";
-import { emitter, EventEnum } from "@/shared/utils/event";
-import { useStore } from "@/store/menu";
-import { nanoid } from "nanoid";
+} from '@/shared/utils';
+import { getMenus } from '@/actions/menu';
+import { Button } from '../ui/button';
+import { MenuOptimisticEnum } from '@/shared/enum';
+import { MenuContext } from '@/context';
+import { useParams, useRouter } from 'next/navigation';
+import { emitter, EventEnum } from '@/shared/utils/event';
+import { useStore } from '@/store/menu';
+import { nanoid } from 'nanoid';
+import { useDocAdd } from '@/hooks/doc/use-doc-action';
 
 interface IProps {
   list: DocumentVO[];
@@ -48,6 +49,9 @@ const Menu: FC<IProps> = ({ list }) => {
       return removeMenuItem(currentState, pid);
     return currentState;
   });
+  const router = useRouter();
+
+  const { trigger } = useDocAdd();
 
   useEffect(() => {
     if (!id) return;
@@ -59,7 +63,7 @@ const Menu: FC<IProps> = ({ list }) => {
     if (item.parent_id) {
       setSelectedKeys([item.parent_id]);
     }
-  }, [menus]);
+  }, [menus, id]);
 
   useEffect(() => {
     emitter.on(EventEnum.MENU_UPDATE_TITLE, ({ title, id, callback }) => {
@@ -108,7 +112,7 @@ const Menu: FC<IProps> = ({ list }) => {
       }
       return (
         <MenuItem
-          key={item.id + "_" + key}
+          key={item.id + '_' + key}
           level={level}
           id={item.id}
           title={item.title}
@@ -118,14 +122,16 @@ const Menu: FC<IProps> = ({ list }) => {
   };
 
   const handlerAddMenuItem = () => {
-    st(async () => {
-      const id = nanoid();
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id });
-      const data = await createDoc(id);
-      if (!data?.error) {
-        doList();
-      }
-    });
+    const id = nanoid();
+    setMenus(addMenuItem(menus, id));
+    trigger({ id });
+    router.push(`/work/${id}`);
+  };
+
+  const onDelDoc = (id: string, callback: () => void) => {
+    const newMenus = removeMenuItem(menus, id);
+    setMenus(newMenus);
+    callback();
   };
 
   return (
@@ -134,6 +140,7 @@ const Menu: FC<IProps> = ({ list }) => {
         addOptimisticMenus,
         doList,
         setSelectedKeys,
+        onDelDoc,
       }}
     >
       <div className="flex-auto overflow-y-auto">
@@ -146,7 +153,7 @@ const Menu: FC<IProps> = ({ list }) => {
               <span>我的文档</span>
             </h3>
           </div>
-          {open && renderMenu(optimisticMenus)}
+          {open && renderMenu(menus)}
         </div>
         {/* 新建文档 */}
         <div>
