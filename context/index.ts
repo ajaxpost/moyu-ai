@@ -1,6 +1,6 @@
-import { DocumentVO } from "@/shared";
-import { MenuOptimisticEnum } from "@/shared/enum";
-import { createContext, Dispatch, SetStateAction } from "react";
+import { DocumentVO } from '@/shared';
+import { MenuOptimisticEnum } from '@/shared/enum';
+import { createContext, Dispatch, SetStateAction } from 'react';
 
 export const MenuContext = createContext<{
   addOptimisticMenus: (action: {
@@ -10,10 +10,12 @@ export const MenuContext = createContext<{
   }) => void;
   doList: () => Promise<DocumentVO[] | undefined>;
   setSelectedKeys: Dispatch<SetStateAction<string[]>>;
+  onDelDoc: (id: string, callback: () => void) => void;
 }>({
   addOptimisticMenus: () => {},
   doList: async () => {
     return undefined;
   },
   setSelectedKeys: () => {},
+  onDelDoc: () => {},
 });
