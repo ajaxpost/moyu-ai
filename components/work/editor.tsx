@@ -1,21 +1,22 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
-import { useBlockEditor } from '@/hooks/useBlockEditor';
-import { EditorContent } from '@tiptap/react';
-import { useStore as useEditorStore } from '@/store/editor';
-import { WebSocketStatus, HocuspocusProvider } from '@hocuspocus/provider';
-import { Doc as YDoc } from 'yjs';
-import { Session } from 'next-auth';
-import { Skeleton } from '../ui/skeleton';
-import ImageBlockMenu from '@/extensions/image-block/components/image-block-menu';
-import './editor.css';
+import { useEffect } from "react";
+import { useBlockEditor } from "@/hooks/useBlockEditor";
+import { EditorContent } from "@tiptap/react";
+import { useStore as useEditorStore } from "@/store/editor";
+import { WebSocketStatus, HocuspocusProvider } from "@hocuspocus/provider";
+import { Doc as YDoc } from "yjs";
+import { Session } from "next-auth";
+import { Skeleton } from "../ui/skeleton";
+import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu";
+import "./editor.css";
 
 interface IProps {
   provider: HocuspocusProvider;
   ydoc: YDoc;
   session: Session;
   collabState: WebSocketStatus;
+  isReadonly: boolean;
 }
 
 export default function Editor({
@@ -23,16 +24,18 @@ export default function Editor({
   provider,
   session,
   collabState,
+  isReadonly,
 }: IProps) {
   const { editor, users, characters } = useBlockEditor({
     provider,
     ydoc,
     user: session.user || {
-      name: 'anonymous',
-      image: '',
-      email: '',
-      id: 'anonymous',
+      name: "anonymous",
+      image: "",
+      email: "",
+      id: "anonymous",
     },
+    isReadonly,
   });
 
   useEffect(() => {

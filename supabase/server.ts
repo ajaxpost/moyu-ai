@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from "@supabase/ssr";
+import { createServerClient } from "@supabase/ssr";
 import { UnsafeUnwrappedCookies } from "next/headers";
 
 export const createClient = (cookieStore: UnsafeUnwrappedCookies) => {
@@ -22,6 +22,11 @@ export const createClient = (cookieStore: UnsafeUnwrappedCookies) => {
           }
         },
       },
+      // global: {
+      //   headers: {
+      //     Authorization: `Bearer ${supabaseAccessToken}`,
+      //   },
+      // },
     }
   );
 };

@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@auth/supabase-adapter": "^1.7.4",
     "@emotion/css": "^11.13.5",
     "@hocuspocus/provider": "^2.15.0",
     "@hocuspocus/server": "^2.15.0",
