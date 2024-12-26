@@ -20,7 +20,6 @@ import { getMenus } from "@/actions/menu";
 export default async function Sider() {
   const session = await auth();
   const list = await getMenus();
-
   return (
     <div className="flex flex-col h-screen bg-muted text-muted-foreground p-2">
       <div>

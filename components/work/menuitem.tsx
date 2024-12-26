@@ -1,20 +1,20 @@
-'use client';
-import { FC, startTransition, use, MouseEvent } from 'react';
-import { Ellipsis, Plus, Trash2 } from 'lucide-react';
+"use client";
+import { FC, startTransition, use, MouseEvent } from "react";
+import { Ellipsis, Plus, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import clsx from 'clsx';
-import { MenuContext } from '@/context';
-import { MenuOptimisticEnum } from '@/shared/enum';
-import { createDoc } from '@/actions/menu';
-import { useParams, useRouter } from 'next/navigation';
-import { useStore } from '@/store/menu';
-import { nanoid } from 'nanoid';
-import { useDocDel } from '@/hooks/doc/use-doc-action';
+} from "@/components/ui/dropdown-menu";
+import clsx from "clsx";
+import { MenuContext } from "@/context";
+import { MenuOptimisticEnum } from "@/shared/enum";
+import { createDoc } from "@/actions/menu";
+import { useParams, useRouter } from "next/navigation";
+import { useStore } from "@/store/menu";
+import { nanoid } from "nanoid";
+import { useDocDel } from "@/hooks/doc/use-doc-action";
 
 interface IProps {
   id: string;
@@ -37,14 +37,14 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
         title,
       },
     });
-    router.push('/work/' + (_id || id));
+    router.push("/work/" + (_id || id));
   };
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     onDelDoc(id, () => {
       trigger({ ids: [id] });
-      router.push('/work/0');
+      router.push("/work/0");
     });
   };
 
@@ -65,11 +65,11 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
     <div>
       <div
         className={clsx(
-          'text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3',
+          "text-sm flex justify-between items-center w-full hover:text-secondary-foreground hover:bg-active rounded-sm group mb-0.5 px-1 pl-3",
           {
-            'bg-active': id === (activeItem?.id ?? _id),
-            'font-bold': id === (activeItem?.id ?? _id),
-            'text-secondary-foreground': id === (activeItem?.id ?? _id),
+            "bg-active": id === (activeItem?.id ?? _id),
+            "font-bold": id === (activeItem?.id ?? _id),
+            "text-secondary-foreground": id === (activeItem?.id ?? _id),
           }
         )}
         onClick={() => handlerClick()}
@@ -81,7 +81,7 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
               marginLeft: (level || 1) * 16,
             }}
           >
-            {title || '<无标题>'}
+            {title || "<无标题>"}
           </span>
         </div>
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">

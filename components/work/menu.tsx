@@ -1,32 +1,25 @@
-'use client';
-import {
-  FC,
-  useEffect,
-  useOptimistic,
-  useState,
-  startTransition as st,
-  useRef,
-} from 'react';
-import { ChevronDown, Plus } from 'lucide-react';
-import SubMenu from './submenu';
-import MenuItem from './menuitem';
-import { DocumentVO } from '@/shared';
+"use client";
+import { FC, useEffect, useOptimistic, useState, useRef } from "react";
+import { ChevronDown, Plus } from "lucide-react";
+import SubMenu from "./submenu";
+import MenuItem from "./menuitem";
+import { DocumentVO } from "@/shared";
 import {
   addMenuItem,
   findMenuItem,
   getMenuTreeData,
   removeMenuItem,
   updateTitle,
-} from '@/shared/utils';
-import { getMenus } from '@/actions/menu';
-import { Button } from '../ui/button';
-import { MenuOptimisticEnum } from '@/shared/enum';
-import { MenuContext } from '@/context';
-import { useParams, useRouter } from 'next/navigation';
-import { emitter, EventEnum } from '@/shared/utils/event';
-import { useStore } from '@/store/menu';
-import { nanoid } from 'nanoid';
-import { useDocAdd } from '@/hooks/doc/use-doc-action';
+} from "@/shared/utils";
+import { getMenus } from "@/actions/menu";
+import { Button } from "../ui/button";
+import { MenuOptimisticEnum } from "@/shared/enum";
+import { MenuContext } from "@/context";
+import { useParams, useRouter } from "next/navigation";
+import { emitter, EventEnum } from "@/shared/utils/event";
+import { useStore } from "@/store/menu";
+import { nanoid } from "nanoid";
+import { useDocAdd } from "@/hooks/doc/use-doc-action";
 
 interface IProps {
   list: DocumentVO[];
@@ -52,6 +45,10 @@ const Menu: FC<IProps> = ({ list }) => {
   const router = useRouter();
 
   const { trigger } = useDocAdd();
+
+  useEffect(() => {
+    setMenus(getMenuTreeData(list));
+  }, [list]);
 
   useEffect(() => {
     if (!id) return;
@@ -112,7 +109,7 @@ const Menu: FC<IProps> = ({ list }) => {
       }
       return (
         <MenuItem
-          key={item.id + '_' + key}
+          key={item.id + "_" + key}
           level={level}
           id={item.id}
           title={item.title}
