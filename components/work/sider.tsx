@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { auth, signOut } from "@/auth";
 import { getMenus } from "@/actions/menu";
+import { redirect } from "next/navigation";
 
 export default async function Sider() {
   const session = await auth();
@@ -59,6 +60,7 @@ export default async function Sider() {
                 onClick={async () => {
                   "use server";
                   await signOut();
+                  redirect("/");
                 }}
               >
                 确认

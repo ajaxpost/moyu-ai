@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, PropsWithChildren, MouseEvent, startTransition, use } from "react";
+import { FC, PropsWithChildren, MouseEvent, use } from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -15,19 +15,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuContext } from "@/context";
-import { MenuOptimisticEnum } from "@/shared/enum";
-import { createDoc, delDoc } from "@/actions/menu";
-import { DocumentVO } from "@/shared";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
-import { nanoid } from "nanoid";
 
 interface IProps {
   id: string;
   title: string;
   level: number;
-  child: DocumentVO[];
   actived: boolean;
   onSelect: (key: string) => void;
 }
@@ -36,37 +31,23 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   id,
   title,
   level,
-  child,
   children,
   actived,
   onSelect,
 }) => {
-  const { addOptimisticMenus, doList, setSelectedKeys } = use(MenuContext);
+  const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const router = useRouter();
   const { id: _id } = useParams();
   const activeItem = useStore((state) => state.activeItem);
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    startTransition(async () => {
-      addOptimisticMenus({ type: MenuOptimisticEnum.DEL, pid: id });
-      const data = await delDoc([id, ...child.map((item) => item.id)]);
-      if (!data.error) {
-        doList();
-      }
-    });
+    onDelDoc(id);
   };
   const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    startTransition(async () => {
-      setSelectedKeys((o) => [...o, id]);
-      const nid = nanoid();
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id: nid, pid: id });
-      const data = await createDoc(nid, id);
-      if (!data?.error) {
-        doList();
-      }
-    });
+    setSelectedKeys((o) => [...o, id]);
+    onAddDoc(id);
   };
 
   const handlerClick = () => {

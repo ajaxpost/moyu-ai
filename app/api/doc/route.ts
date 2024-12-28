@@ -1,4 +1,4 @@
-import { createDoc, delDoc, delTipDoc } from '@/actions/menu';
+import { createDoc, delDoc } from "@/actions/menu";
 
 // add
 export async function POST(request: Request) {
@@ -11,9 +11,5 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   const data = await request.json();
   delDoc(data.ids);
-  data.ids.map(async (id: string) => {
-    const d = await delTipDoc(id);
-    console.log(d, 'delTipDoc');
-  });
-  return Response.json({ data: 'delete' });
+  return Response.json({ data: "delete" });
 }

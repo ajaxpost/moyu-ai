@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useOptimistic, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import SubMenu from "./submenu";
 import MenuItem from "./menuitem";
@@ -7,19 +7,19 @@ import { DocumentVO } from "@/shared";
 import {
   addMenuItem,
   findMenuItem,
+  findMenuItemParentKeys,
   getMenuTreeData,
   removeMenuItem,
   updateTitle,
 } from "@/shared/utils";
 import { getMenus } from "@/actions/menu";
 import { Button } from "../ui/button";
-import { MenuOptimisticEnum } from "@/shared/enum";
 import { MenuContext } from "@/context";
 import { useParams, useRouter } from "next/navigation";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
 import { nanoid } from "nanoid";
-import { useDocAdd } from "@/hooks/doc/use-doc-action";
+import { useDocAdd, useDocDel } from "@/hooks/doc/use-doc-action";
 
 interface IProps {
   list: DocumentVO[];
@@ -31,20 +31,10 @@ const Menu: FC<IProps> = ({ list }) => {
   const timeOut = useRef<NodeJS.Timeout | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [menus, setMenus] = useState<DocumentVO[]>(getMenuTreeData(list));
-  const [optimisticMenus, addOptimisticMenus] = useOptimistic<
-    DocumentVO[],
-    { type: MenuOptimisticEnum; id?: string; pid?: string }
-  >(menus, (currentState, { type, id, pid }) => {
-    if (type === MenuOptimisticEnum.ADD) {
-      return addMenuItem(currentState, id!, pid);
-    }
-    if (type === MenuOptimisticEnum.DEL)
-      return removeMenuItem(currentState, pid);
-    return currentState;
-  });
   const router = useRouter();
 
   const { trigger } = useDocAdd();
+  const { trigger: delTrigger } = useDocDel();
 
   useEffect(() => {
     setMenus(getMenuTreeData(list));
@@ -57,10 +47,11 @@ const Menu: FC<IProps> = ({ list }) => {
     useStore.setState({
       activeItem: item,
     });
-    if (item.parent_id) {
-      setSelectedKeys([item.parent_id]);
+    const keys = findMenuItemParentKeys(menus, String(id));
+    if (keys.length) {
+      setSelectedKeys(keys);
     }
-  }, [menus, id]);
+  }, [menus]);
 
   useEffect(() => {
     emitter.on(EventEnum.MENU_UPDATE_TITLE, ({ title, id, callback }) => {
@@ -99,7 +90,6 @@ const Menu: FC<IProps> = ({ list }) => {
             level={level}
             id={item.id}
             title={item.title}
-            child={item.children}
             actived={selectedKeys.some((o) => o === item.id)}
             onSelect={onSelect}
           >
@@ -118,26 +108,30 @@ const Menu: FC<IProps> = ({ list }) => {
     });
   };
 
-  const handlerAddMenuItem = () => {
-    const id = nanoid();
-    setMenus(addMenuItem(menus, id));
-    trigger({ id });
-    router.push(`/work/${id}`);
+  const handlerAddMenuItem = async () => {
+    onAddDoc();
   };
 
-  const onDelDoc = (id: string, callback: () => void) => {
+  const onDelDoc = async (id: string) => {
     const newMenus = removeMenuItem(menus, id);
     setMenus(newMenus);
-    callback();
+    await delTrigger({ ids: [id] });
+  };
+
+  const onAddDoc = async (pid?: string) => {
+    const id = nanoid();
+    setMenus(addMenuItem(menus, id, pid));
+    await trigger({ id, pid });
+    router.push(`/work/${id}`);
   };
 
   return (
     <MenuContext
       value={{
-        addOptimisticMenus,
         doList,
         setSelectedKeys,
         onDelDoc,
+        onAddDoc,
       }}
     >
       <div className="flex-auto overflow-y-auto">

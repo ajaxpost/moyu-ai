@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    staleTimes: {
+      dynamic: 60, // 对于动态页面，缓存 60s，默认 0s
+      static: 180,
+    },
+  },
 };
 
 export default nextConfig;

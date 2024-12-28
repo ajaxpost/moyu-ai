@@ -28,39 +28,42 @@ export const useBlockEditor = ({
   user: User;
   isReadonly: boolean;
 }) => {
-  const editor = useEditor({
-    extensions: [
-      ...ExtensionKit(),
-      provider
-        ? Collaboration.configure({
-            document: ydoc,
-          })
-        : undefined,
-      provider
-        ? CollaborationCursor.configure({
-            provider,
-            user: {
-              name: user?.email,
-              image: user.image,
-              color: randomElement(userColors),
-            },
-          })
-        : undefined,
-    ].filter((e) => e !== undefined),
-    immediatelyRender: false,
-    autofocus: true,
-    shouldRerenderOnTransaction: false,
-    editable: !isReadonly,
-    editorProps: {
-      attributes: {
-        autocomplete: "off",
-        autocorrect: "off",
-        autocapitalize: "off",
-        class: "focus:outline-none prose",
-        style: "padding-bottom: 200px",
+  const editor = useEditor(
+    {
+      extensions: [
+        ...ExtensionKit(),
+        provider
+          ? Collaboration.configure({
+              document: ydoc,
+            })
+          : undefined,
+        provider
+          ? CollaborationCursor.configure({
+              provider,
+              user: {
+                name: user?.email,
+                image: user.image,
+                color: randomElement(userColors),
+              },
+            })
+          : undefined,
+      ].filter((e) => e !== undefined),
+      immediatelyRender: false,
+      autofocus: true,
+      shouldRerenderOnTransaction: false,
+      editable: !isReadonly,
+      editorProps: {
+        attributes: {
+          autocomplete: "off",
+          autocorrect: "off",
+          autocapitalize: "off",
+          class: "focus:outline-none prose",
+          style: "padding-bottom: 200px",
+        },
       },
     },
-  });
+    [isReadonly]
+  );
 
   const users = useEditorState({
     editor,

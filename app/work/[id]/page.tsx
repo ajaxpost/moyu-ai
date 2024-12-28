@@ -2,6 +2,14 @@ import { getDoc } from "@/actions/menu";
 import BlockEditor from "@/components/work/block-editor";
 import { notFound } from "next/navigation";
 
+export async function generateStaticParams() {
+  // const docs = await getStaticIds();
+  // return docs.map((item) => ({
+  //   id: item.id,
+  // }));
+  return [];
+}
+
 export default async function Page({
   params,
 }: {
@@ -11,8 +19,7 @@ export default async function Page({
   const doc = await getDoc(id);
   if (!doc) {
     notFound();
-    return;
   }
 
-  return <BlockEditor />;
+  return <BlockEditor title={doc.title} permission={doc.permission} />;
 }
