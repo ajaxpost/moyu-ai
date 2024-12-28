@@ -29,7 +29,7 @@ export default function Editor({
   const { editor, users, characters } = useBlockEditor({
     provider,
     ydoc,
-    user: session.user || {
+    user: session?.user || {
       name: "anonymous",
       image: "",
       email: "",
@@ -60,10 +60,4 @@ export default function Editor({
       <ImageBlockMenu editor={editor} />
     </>
   );
-  // return (
-  //   <>
-  //     <EditorContent editor={editor} className="focus:outline-none" />
-  //     <ImageBlockMenu editor={editor} />
-  //   </>
-  // );
 }

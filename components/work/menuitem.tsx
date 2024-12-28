@@ -1,5 +1,5 @@
 "use client";
-import { FC, startTransition, use, MouseEvent } from "react";
+import { FC, use, MouseEvent } from "react";
 import { Ellipsis, Plus, Trash2 } from "lucide-react";
 import {
   DropdownMenu,
@@ -9,12 +9,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import clsx from "clsx";
 import { MenuContext } from "@/context";
-import { MenuOptimisticEnum } from "@/shared/enum";
-import { createDoc } from "@/actions/menu";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
-import { nanoid } from "nanoid";
-import { useDocDel } from "@/hooks/doc/use-doc-action";
 
 interface IProps {
   id: string;
@@ -25,10 +21,8 @@ interface IProps {
 const MenuItem: FC<IProps> = ({ id, title, level }) => {
   const { id: _id } = useParams();
   const router = useRouter();
-  const { addOptimisticMenus, doList, setSelectedKeys, onDelDoc } =
-    use(MenuContext);
+  const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
-  const { trigger } = useDocDel();
 
   const handlerClick = (_id?: string) => {
     useStore.setState({
@@ -42,23 +36,13 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    onDelDoc(id, () => {
-      trigger({ ids: [id] });
-      router.push("/work/0");
-    });
+    onDelDoc(id);
   };
 
   const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
     setSelectedKeys((o) => [...o, id]);
-    startTransition(async () => {
-      const nid = nanoid();
-      addOptimisticMenus({ type: MenuOptimisticEnum.ADD, id: nid, pid: id });
-      const data = await createDoc(nid, id);
-      if (!data?.error) {
-        doList();
-      }
-    });
+    onAddDoc(id);
   };
 
   return (

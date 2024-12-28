@@ -13,14 +13,27 @@ import { WebSocketStatus } from "@hocuspocus/provider";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ModeToggle } from "../mode-toggle";
 import Image from "next/image";
+import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { Button } from "../ui/button";
+import { PermissionEnum } from "@/shared/enum";
+import { useMemo } from "react";
 
-export default function Header() {
+interface IProps {
+  permission: PermissionEnum;
+}
+
+export default function Header({ permission }: IProps) {
   const { users, collabState, characters } = useStore(
     useShallow((state) => ({
       users: state.users,
       collabState: state.collabState,
       characters: state.characters,
     }))
+  );
+
+  const isPublic = useMemo(
+    () => permission === PermissionEnum.PUBLIC,
+    [permission]
   );
 
   return (
@@ -98,6 +111,20 @@ export default function Header() {
             </span>
           </>
         )}
+        <TooltipProvider delayDuration={300}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button variant="ghost" size="icon" className="ml-2">
+                {isPublic ? (
+                  <LockKeyholeOpen className="w-4 h-4" />
+                ) : (
+                  <LockKeyhole className="w-4 h-4" />
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{isPublic ? "公开" : "私密"}文档</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
       </div>
       <div className="flex-1 text-end">
         <ModeToggle />

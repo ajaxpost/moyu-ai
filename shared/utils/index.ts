@@ -47,10 +47,9 @@ export function addMenuItem(data: DocumentVO[], id: string, pid?: string) {
     id,
     parent_id: pid,
     title: "",
-    creator: "",
-    creator_email: "",
     created_at: "",
     updated_at: "",
+    uid: "",
   };
   if (!pid) return [..._data, defaultItem];
   const findChild = (data: DocumentVO[]) => {
@@ -118,5 +117,28 @@ export function findMenuItem(data: DocumentVO[], id: string) {
     }
     return undefined;
   };
+  return findItem(data);
+}
+
+export function findMenuItemParentKeys(
+  data: DocumentVO[],
+  id: string
+): string[] {
+  const findItem = (data: DocumentVO[], parentId?: string[]): string[] => {
+    for (let i = 0; i < data.length; i++) {
+      const item = data[i];
+      if (item.id === id) {
+        return parentId || [];
+      }
+      if (item.children) {
+        const find = findItem(item.children, [...(parentId || []), item.id]);
+        if (find.length) {
+          return find;
+        }
+      }
+    }
+    return [];
+  };
+
   return findItem(data);
 }

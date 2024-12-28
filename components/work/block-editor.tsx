@@ -7,12 +7,17 @@ import { useEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
 import { useSession } from "next-auth/react";
 import Header from "./header";
-import { useStore } from "@/store/menu";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { updateTitle } from "@/actions/menu";
 import { isEnter } from "@/shared/hotkey";
+import { PermissionEnum } from "@/shared/enum";
 
-const BlockEditor: FC = () => {
+interface IProps {
+  title: string;
+  permission: PermissionEnum;
+}
+
+const BlockEditor: FC<IProps> = ({ title, permission }) => {
   const { id } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const ydoc = useMemo(() => new YDoc(), []);
@@ -24,10 +29,9 @@ const BlockEditor: FC = () => {
   );
   const [isReadonly, setIsReadonly] = useState(true);
   const session = useSession();
-  const title = useStore((state) => state.activeItem?.title);
 
   useEffect(() => {
-    const token: string = "readonlyxxx";
+    const token: string = "xxxxx";
     const provider = new HocuspocusProvider({
       url: "ws://127.0.0.1:9090",
       name: `doc_${id}`,
@@ -46,6 +50,9 @@ const BlockEditor: FC = () => {
       },
     });
     setProvider(provider);
+    return () => {
+      provider.disconnect();
+    };
   }, [ydoc]);
 
   const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +79,7 @@ const BlockEditor: FC = () => {
 
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden">
-      <Header />
+      <Header permission={permission} />
       <div
         className="flex overflow-auto"
         style={{

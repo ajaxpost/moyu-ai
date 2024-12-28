@@ -213,11 +213,22 @@ li > ol {
   font-weight: 600;
   left: -1px;
   line-height: normal;
-  padding: .1rem .3rem;
+  padding: 0.1rem 0.3rem;
   position: absolute;
   top: -1.4em;
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
   white-space: nowrap;
+}
+.ProseMirror .node-imageBlock img {
+  overflow: hidden;
+  border-radius: 0.75rem;
+  border-width: 2px;
+  border-color: transparent;
+}
+.ProseMirror img {
+  height: auto;
+  width: 100%;
+  max-width: 100%;
 }

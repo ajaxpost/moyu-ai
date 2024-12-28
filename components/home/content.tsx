@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 
 export default async function Context() {
   const session = await auth();
+  console.log(session, ">>");
+
   // const handlerLogOut = async () => {
   //   "use server";
   //   await signOut();
