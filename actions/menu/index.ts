@@ -116,3 +116,11 @@ export async function getPermission(id: string) {
     .single();
   return data as PermissionVO;
 }
+
+export async function updatePermission(id: string, permission: PermissionEnum) {
+  const session = await auth();
+  if (!session?.user) return;
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  return await supabase.from("permission").update({ permission }).eq("did", id);
+}

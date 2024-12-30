@@ -8,6 +8,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import TooltipV2 from "../ui/tooltip-v2";
 import { cn } from "@/lib/utils";
 import { WebSocketStatus } from "@hocuspocus/provider";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -16,13 +17,30 @@ import Image from "next/image";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
 import { Button } from "../ui/button";
 import { PermissionEnum } from "@/shared/enum";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useDocUpdatePermission } from "@/hooks/doc/use-doc-action";
+import { useParams } from "next/navigation";
 
 interface IProps {
   permission: PermissionEnum;
+  isAdmin: boolean;
 }
 
-export default function Header({ permission }: IProps) {
+export default function Header({
+  permission = PermissionEnum.PRIVATE,
+  isAdmin,
+}: IProps) {
+  const { id } = useParams();
+  const [_permission, $permission] = useState(String(permission));
   const { users, collabState, characters } = useStore(
     useShallow((state) => ({
       users: state.users,
@@ -31,10 +49,24 @@ export default function Header({ permission }: IProps) {
     }))
   );
 
+  const { trigger } = useDocUpdatePermission();
+
+  useEffect(() => {
+    $permission(String(permission));
+  }, [permission]);
+
   const isPublic = useMemo(
-    () => permission === PermissionEnum.PUBLIC,
-    [permission]
+    () => _permission === String(PermissionEnum.PUBLIC),
+    [_permission]
   );
+
+  const handlerPermissionChange = async (v: string) => {
+    await trigger({
+      id: id as string,
+      permission: Number(v) as PermissionEnum,
+    });
+    $permission(v);
+  };
 
   return (
     <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1">
@@ -111,20 +143,38 @@ export default function Header({ permission }: IProps) {
             </span>
           </>
         )}
-        <TooltipProvider delayDuration={300}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" className="ml-2">
+
+        <DropdownMenu>
+          <TooltipV2 title={isPublic ? "公开" : "私密" + "文档"}>
+            <DropdownMenuTrigger className="ml-2" asChild>
+              <Button variant="ghost" size="icon">
                 {isPublic ? (
                   <LockKeyholeOpen className="w-4 h-4" />
                 ) : (
                   <LockKeyhole className="w-4 h-4" />
                 )}
               </Button>
-            </TooltipTrigger>
-            <TooltipContent>{isPublic ? "公开" : "私密"}文档</TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+            </DropdownMenuTrigger>
+          </TooltipV2>
+
+          {isAdmin && (
+            <DropdownMenuContent>
+              <DropdownMenuLabel>文档权限</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuRadioGroup
+                value={String(_permission)}
+                onValueChange={handlerPermissionChange}
+              >
+                <DropdownMenuRadioItem value={String(PermissionEnum.PUBLIC)}>
+                  公开
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value={String(PermissionEnum.PRIVATE)}>
+                  私密
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+            </DropdownMenuContent>
+          )}
+        </DropdownMenu>
       </div>
       <div className="flex-1 text-end">
         <ModeToggle />
