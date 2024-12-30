@@ -20,18 +20,18 @@ interface IProps {
 
 const MenuItem: FC<IProps> = ({ id, title, level }) => {
   const { id: _id } = useParams();
-  const router = useRouter();
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
+  const router = useRouter();
 
-  const handlerClick = (_id?: string) => {
+  const handlerClick = (_id: string) => {
     useStore.setState({
       activeItem: {
-        id: _id || id,
+        id: _id,
         title,
       },
     });
-    router.push("/work/" + (_id || id));
+    router.push(`/work/${_id}`);
   };
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
@@ -56,7 +56,7 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
             "text-secondary-foreground": id === (activeItem?.id ?? _id),
           }
         )}
-        onClick={() => handlerClick()}
+        onClick={() => handlerClick(id)}
       >
         <div className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center">
           <span

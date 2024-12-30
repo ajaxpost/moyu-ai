@@ -15,9 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuContext } from "@/context";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
+import Link from "next/link";
 
 interface IProps {
   id: string;
@@ -36,7 +37,6 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   onSelect,
 }) => {
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
-  const router = useRouter();
   const { id: _id } = useParams();
   const activeItem = useStore((state) => state.activeItem);
 
@@ -51,7 +51,6 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   };
 
   const handlerClick = () => {
-    router.push("/work/" + id);
     useStore.setState({
       activeItem: {
         id,
@@ -85,12 +84,13 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
             <ChevronRight className="h-4 w-4" />
           )}
         </div>
-        <div
+        <Link
           onClick={handlerClick}
+          href={"/work/" + id}
           className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
           <span className="truncate flex-auto">{title || "<无标题>"}</span>
-        </div>
+        </Link>
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

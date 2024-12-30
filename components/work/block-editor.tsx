@@ -13,11 +13,16 @@ import { isEnter } from "@/shared/hotkey";
 import { PermissionEnum } from "@/shared/enum";
 
 interface IProps {
-  title: string;
-  permission: PermissionEnum;
+  title?: string;
+  permission?: PermissionEnum;
+  userId?: string;
 }
 
-const BlockEditor: FC<IProps> = ({ title, permission }) => {
+const BlockEditor: FC<IProps> = ({
+  title,
+  permission = PermissionEnum.PRIVATE,
+  userId,
+}) => {
   const { id } = useParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const ydoc = useMemo(() => new YDoc(), []);
@@ -30,8 +35,13 @@ const BlockEditor: FC<IProps> = ({ title, permission }) => {
   const [isReadonly, setIsReadonly] = useState(true);
   const session = useSession();
 
+  const isAdmin = useMemo(
+    () => userId === session.data?.user.id,
+    [userId, session.data?.user.id]
+  );
   useEffect(() => {
-    const token: string = "xxxxx";
+    if (!userId || !session.data?.user.id) return;
+    const token: string = isAdmin ? userId : "readonly";
     const provider = new HocuspocusProvider({
       url: "ws://127.0.0.1:9090",
       name: `doc_${id}`,
@@ -53,7 +63,7 @@ const BlockEditor: FC<IProps> = ({ title, permission }) => {
     return () => {
       provider.disconnect();
     };
-  }, [ydoc]);
+  }, [ydoc, isAdmin]);
 
   const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -79,7 +89,7 @@ const BlockEditor: FC<IProps> = ({ title, permission }) => {
 
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden">
-      <Header permission={permission} />
+      <Header permission={permission} isAdmin={isAdmin} />
       <div
         className="flex overflow-auto"
         style={{

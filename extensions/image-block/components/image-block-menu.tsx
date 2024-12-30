@@ -3,6 +3,7 @@ import { Editor } from "@tiptap/core";
 import { BubbleMenu, useEditorState } from "@tiptap/react";
 import { Toolbar } from "@/components/ui/toolbar";
 import { Icon } from "@/components/ui/icon";
+import { sticky } from "tippy.js";
 import { ImageBlockWidth } from "./image-block-width";
 
 interface IProps {
@@ -78,12 +79,21 @@ const ImageBlockMenu: FC<IProps> = ({ editor }) => {
       pluginKey="image-block-menu"
       updateDelay={0}
       shouldShow={shouldShow}
+      className="bbb-m"
       tippyOptions={{
         offset: [0, 8],
         popperOptions: {
           modifiers: [{ name: "flip", enabled: false }],
         },
-        // sticky: "popper",
+        // getReferenceClientRect,
+        // onCreate: (instance: Instance) => {
+        //   tippyInstance.current = instance;
+        // },
+        // appendTo: () => {
+        //   return appendTo?.current;
+        // },
+        plugins: [sticky],
+        sticky: "popper",
       }}
     >
       <Toolbar.Wrapper>
