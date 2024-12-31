@@ -7,9 +7,9 @@ import { useStore as useEditorStore } from "@/store/editor";
 import { WebSocketStatus, HocuspocusProvider } from "@hocuspocus/provider";
 import { Doc as YDoc } from "yjs";
 import { Session } from "next-auth";
-import { Skeleton } from "../ui/skeleton";
 import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu";
 import "./editor.css";
+import { Skeleton } from "../ui/skeleton";
 
 interface IProps {
   provider: HocuspocusProvider;

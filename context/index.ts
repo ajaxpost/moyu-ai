@@ -4,7 +4,7 @@ import { createContext, Dispatch, SetStateAction } from "react";
 export const MenuContext = createContext<{
   doList: () => Promise<DocumentVO[] | undefined>;
   setSelectedKeys: Dispatch<SetStateAction<string[]>>;
-  onDelDoc: (id: string) => void;
+  onDelDoc: (ids: string[]) => void;
   onAddDoc: (pid?: string) => void;
 }>({
   doList: async () => {

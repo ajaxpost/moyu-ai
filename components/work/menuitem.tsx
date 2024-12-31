@@ -36,7 +36,7 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    onDelDoc(id);
+    onDelDoc([id]);
   };
 
   const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {

@@ -11,7 +11,6 @@ import {
 import TooltipV2 from "../ui/tooltip-v2";
 import { cn } from "@/lib/utils";
 import { WebSocketStatus } from "@hocuspocus/provider";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ModeToggle } from "../mode-toggle";
 import Image from "next/image";
 import { LockKeyhole, LockKeyholeOpen } from "lucide-react";
@@ -29,6 +28,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useDocUpdatePermission } from "@/hooks/doc/use-doc-action";
 import { useParams } from "next/navigation";
+import { Skeleton } from "../ui/skeleton";
 
 interface IProps {
   permission: PermissionEnum;

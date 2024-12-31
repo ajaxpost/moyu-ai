@@ -1,6 +1,14 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 "use client";
 
-import { FC, PropsWithChildren, MouseEvent, use } from "react";
+import {
+  FC,
+  PropsWithChildren,
+  MouseEvent,
+  use,
+  Children,
+  ReactNode,
+} from "react";
 import {
   ChevronRight,
   ChevronDown,
@@ -40,9 +48,25 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   const { id: _id } = useParams();
   const activeItem = useStore((state) => state.activeItem);
 
+  // @ts-ignore
+  const getDelIDs = (data: ReactNode) => {
+    // @ts-ignore
+    return Children.map(data, (child) => {
+      let ids = [];
+      // @ts-ignore
+      if (child.props.children) {
+        // @ts-ignore
+        ids = getDelIDs(child.props.children);
+      }
+      // @ts-ignore
+      return ids.concat(child.props.id);
+    });
+  };
+
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
-    onDelDoc(id);
+    const ids = getDelIDs(children) ?? [];
+    onDelDoc(ids.concat(id));
   };
   const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();

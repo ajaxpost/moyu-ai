@@ -67,7 +67,7 @@ export const Tooltip = ({
         offset={[0, 8]}
         touch={false}
         zIndex={99999}
-        appendTo={document.body}
+        // appendTo={document.body}
         // eslint-disable-next-line react/jsx-props-no-spreading
         {...tippyOptions}
         render={renderTooltip}
