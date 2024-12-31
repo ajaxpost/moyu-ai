@@ -27,7 +27,6 @@ export async function getMenus() {
     .select("*")
     .order("create_at", { ascending: true })
     .eq("uid", session.user.id);
-  console.log(data, session, ">>>");
 
   return (data || []) as DocumentVO[];
 }

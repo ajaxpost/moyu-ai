@@ -1,0 +1,13 @@
+FROM base AS runner
+
+WORKDIR /app
+
+COPY ./public ./public
+COPY ./.next/standalone ./
+COPY ./.next/static ./.next/static
+COPY ./server.mjs ./backed
+
+# 暴露端口
+EXPOSE 3000
+
+CMD ["node", "server.js",]

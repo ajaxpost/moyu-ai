@@ -71,6 +71,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@svgr/webpack": "^8.1.0",
     "@types/is-hotkey": "^0.1.10",
     "@types/jsonwebtoken": "^9.0.7",
     "@types/lodash-es": "^4.17.12",

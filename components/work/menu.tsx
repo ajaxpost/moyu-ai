@@ -20,9 +20,6 @@ import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
 import { nanoid } from "nanoid";
 import { useDocAdd, useDocDel } from "@/hooks/doc/use-doc-action";
-import { useToast } from "@/hooks/use-toast";
-import dayjs from "dayjs";
-import "dayjs/locale/zh-cn";
 
 interface IProps {
   list: DocumentVO[];
@@ -35,7 +32,6 @@ const Menu: FC<IProps> = ({ list }) => {
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [menus, setMenus] = useState<DocumentVO[]>(getMenuTreeData(list));
   const router = useRouter();
-  const { toast } = useToast();
 
   const { trigger } = useDocAdd();
   const { trigger: delTrigger } = useDocDel();
@@ -116,21 +112,14 @@ const Menu: FC<IProps> = ({ list }) => {
     onAddDoc();
   };
 
-  const onDelDoc = async (id: string) => {
-    const newMenus = removeMenuItem(menus, id);
+  const onDelDoc = async (ids: string[]) => {
+    const newMenus = removeMenuItem(menus, ids);
     setMenus(newMenus);
     router.push("/work/0");
     useStore.setState({
       activeItem: undefined,
     });
-    await delTrigger({ ids: [id] });
-    toast({
-      title: "删除成功",
-      duration: 2500,
-      description: dayjs()
-        .locale("zh-cn")
-        .format("dddd, MMMM D, YYYY at h:mm A"),
-    });
+    await delTrigger({ ids });
   };
 
   const onAddDoc = async (pid?: string) => {

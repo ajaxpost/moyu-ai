@@ -69,11 +69,11 @@ export function addMenuItem(data: DocumentVO[], id: string, pid?: string) {
   return _data;
 }
 
-export function removeMenuItem(data: DocumentVO[], id?: string) {
+export function removeMenuItem(data: DocumentVO[], ids: string[]) {
   const _data = cloneDeep(data);
   const removeItem = (data: DocumentVO[]) => {
     data.forEach((item, index) => {
-      if (item.id === id) {
+      if (ids.includes(item.id)) {
         data.splice(index, 1);
         return;
       }

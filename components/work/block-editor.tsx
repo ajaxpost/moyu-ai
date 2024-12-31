@@ -43,7 +43,7 @@ const BlockEditor: FC<IProps> = ({
     if (!userId || !session.data?.user.id) return;
     const token: string = isAdmin ? userId : "readonly";
     const provider = new HocuspocusProvider({
-      url: "ws://127.0.0.1:9090",
+      url: "ws://112.126.23.48:9090",
       name: `doc_${id}`,
       document: ydoc,
       token,
