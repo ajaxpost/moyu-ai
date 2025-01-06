@@ -1,5 +1,5 @@
 "use client";
-import { FC, useEffect, useState, useRef } from "react";
+import { FC, useEffect, useState, useRef, useLayoutEffect } from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import SubMenu from "./submenu";
 import MenuItem from "./menuitem";
@@ -15,7 +15,7 @@ import {
 import { getMenus } from "@/actions/menu";
 import { Button } from "../ui/button";
 import { MenuContext } from "@/context";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
 import { nanoid } from "nanoid";
@@ -31,27 +31,32 @@ const Menu: FC<IProps> = ({ list }) => {
   const timeOut = useRef<NodeJS.Timeout | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [menus, setMenus] = useState<DocumentVO[]>(getMenuTreeData(list));
-  const router = useRouter();
 
   const { trigger } = useDocAdd();
   const { trigger: delTrigger } = useDocDel();
 
-  useEffect(() => {
-    setMenus(getMenuTreeData(list));
-  }, [list]);
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!id) return;
     const item = findMenuItem(menus, String(id));
-    if (!item) return;
     useStore.setState({
-      activeItem: item,
+      activeItem:
+        id === "0"
+          ? {
+              id: "0",
+            }
+          : item ?? {
+              id: id as string,
+            },
     });
     const keys = findMenuItemParentKeys(menus, String(id));
     if (keys.length) {
       setSelectedKeys(keys);
     }
   }, []);
+
+  useEffect(() => {
+    setMenus(getMenuTreeData(list));
+  }, [list]);
 
   useEffect(() => {
     emitter.on(EventEnum.MENU_UPDATE_TITLE, ({ title, id, callback }) => {
@@ -92,6 +97,7 @@ const Menu: FC<IProps> = ({ list }) => {
             title={item.title}
             actived={selectedKeys.some((o) => o === item.id)}
             onSelect={onSelect}
+            uid={item.uid}
           >
             {renderMenu(item.children, level + 1)}
           </SubMenu>
@@ -103,6 +109,7 @@ const Menu: FC<IProps> = ({ list }) => {
           level={level}
           id={item.id}
           title={item.title}
+          uid={item.uid}
         />
       );
     });
@@ -115,21 +122,26 @@ const Menu: FC<IProps> = ({ list }) => {
   const onDelDoc = async (ids: string[]) => {
     const newMenus = removeMenuItem(menus, ids);
     setMenus(newMenus);
-    router.push("/work/0");
     useStore.setState({
-      activeItem: undefined,
+      activeItem: {
+        id: "0",
+      },
     });
+    window.history.pushState(null, "", `/work/0`);
     await delTrigger({ ids });
   };
 
   const onAddDoc = async (pid?: string) => {
     const id = nanoid();
-    useStore.setState({
-      activeItem: { id },
-    });
     setMenus(addMenuItem(menus, id, pid));
+    useStore.setState({
+      activeItem: { id, pending: true },
+    });
+    window.history.pushState(null, "", `/work/${id}`);
     await trigger({ id, pid });
-    router.push(`/work/${id}`);
+    useStore.setState({
+      activeItem: { id, pending: false },
+    });
   };
 
   return (

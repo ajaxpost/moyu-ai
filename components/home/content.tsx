@@ -1,25 +1,15 @@
 import { Zap } from "lucide-react";
+import { auth } from "@/auth";
+import Link from "next/link";
 import { Button } from "../ui/button";
-import { auth, signIn } from "@/auth";
-import { redirect } from "next/navigation";
 
 export default async function Context() {
   const session = await auth();
-  console.log(session, ">>");
 
   // const handlerLogOut = async () => {
   //   "use server";
   //   await signOut();
   // };
-
-  const handlerLogIn = async () => {
-    "use server";
-    if (session?.user) {
-      redirect("/work/0");
-    } else {
-      await signIn();
-    }
-  };
 
   return (
     <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 relative overflow-hidden">
@@ -37,13 +27,15 @@ export default async function Context() {
             </p>
           </div>
           <div className="flex justify-center space-x-4">
-            <Button
-              className="h-11 rounded-md px-8 text-base"
-              onClick={handlerLogIn}
+            <Link
+              href={session?.user ? "/work/0" : "/api/auth/signin?callbackUrl="}
+              target="_parent"
             >
-              <Zap />
-              {session ? "开始使用" : "登录/注册"}
-            </Button>
+              <Button className="h-11 rounded-md px-8 text-base">
+                <Zap />
+                {session ? "开始使用" : "登录/注册"}
+              </Button>
+            </Link>
             {/* <Button onClick={handlerLogOut}>退出登录</Button> */}
           </div>
         </div>

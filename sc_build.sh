@@ -3,8 +3,8 @@ rm -rf _moyu_
 
 nvm use 20
 
-if ! pnpm build; then
-    echo "pnpm build failed. Exiting..."
+if ! yarn build; then
+    echo "yarn build failed. Exiting..."
     exit 1
 fi
 

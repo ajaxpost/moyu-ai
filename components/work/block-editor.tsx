@@ -1,8 +1,7 @@
 "use client";
-import { ChangeEvent, FC, useRef, KeyboardEvent } from "react";
+import { ChangeEvent, FC, useRef, KeyboardEvent, useLayoutEffect } from "react";
 import Editor from "@/components/work/editor";
 import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
-import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
 import { useSession } from "next-auth/react";
@@ -11,21 +10,19 @@ import { emitter, EventEnum } from "@/shared/utils/event";
 import { updateTitle } from "@/actions/menu";
 import { isEnter } from "@/shared/hotkey";
 import { PermissionEnum } from "@/shared/enum";
+import { useStore } from "@/store/menu";
+import { DocumentVO, isHomeId } from "@/shared";
+import { isEmpty, omit } from "lodash-es";
+import { notFound } from "next/navigation";
 
 interface IProps {
-  title?: string;
-  permission?: PermissionEnum;
-  userId?: string;
+  doc: DocumentVO & {
+    permission: PermissionEnum;
+  };
 }
 
-const BlockEditor: FC<IProps> = ({
-  title,
-  permission = PermissionEnum.PRIVATE,
-  userId,
-}) => {
-  const { id } = useParams();
+const BlockEditor: FC<IProps> = ({ doc }) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const ydoc = useMemo(() => new YDoc(), []);
   const [provider, setProvider] = useState<HocuspocusProvider | undefined>(
     undefined
   );
@@ -34,13 +31,59 @@ const BlockEditor: FC<IProps> = ({
   );
   const [isReadonly, setIsReadonly] = useState(true);
   const session = useSession();
+  const activeItem = useStore((state) => state.activeItem);
+
+  const id = activeItem?.id === isHomeId ? undefined : activeItem?.id;
+
+  const userId = activeItem?.uid ?? doc?.uid;
+  const permission = doc?.permission;
 
   const isAdmin = useMemo(
     () => userId === session.data?.user.id,
     [userId, session.data?.user.id]
   );
+
+  const ydoc = useMemo(() => new YDoc(), [id]);
+
+  useLayoutEffect(() => {
+    if (isEmpty(omit(doc, "permission"))) {
+      useStore.setState((o) => ({
+        ...o,
+        isNotFound: true,
+      }));
+      notFound();
+    }
+    const controller = new AbortController();
+    // 监听 popstate 事件
+    window.addEventListener(
+      "popstate",
+      function (event) {
+        const regex = /\/work\/([^\/]+)/;
+        const pathname = location.pathname;
+        const match = pathname.match(regex);
+        if (match) {
+          const id = match[1];
+          const { title } = event.state;
+          useStore.setState({
+            activeItem: {
+              id,
+              title,
+            },
+          });
+        }
+      },
+      {
+        signal: controller.signal,
+      }
+    );
+  }, []);
+
   useEffect(() => {
-    if (!userId || !session.data?.user.id) return;
+    localStorage.setItem("doc_title", activeItem?.title ?? doc?.title ?? "");
+  }, [activeItem?.title, doc?.title]);
+
+  useEffect(() => {
+    if (!userId || !id) return;
     const token: string = isAdmin ? userId : "readonly";
     const provider = new HocuspocusProvider({
       url: "ws://112.126.23.48:9090",
@@ -62,21 +105,26 @@ const BlockEditor: FC<IProps> = ({
     setProvider(provider);
     return () => {
       provider.disconnect();
+      provider.destroy();
     };
-  }, [ydoc, isAdmin]);
+  }, [ydoc, isAdmin, userId, id]);
 
   const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (value) {
-      emitter.emit(EventEnum.MENU_UPDATE_TITLE, {
+    useStore.setState({
+      activeItem: {
+        ...activeItem,
         title: value,
-        id,
-        callback: () => {
-          // editor?.chain().focus().run();
-          updateTitle(String(id), value);
-        },
-      });
-    }
+      },
+    });
+    emitter.emit(EventEnum.MENU_UPDATE_TITLE, {
+      title: value,
+      id,
+      callback: () => {
+        // editor?.chain().focus().run();
+        updateTitle(String(id), value);
+      },
+    });
   };
 
   const handlerKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -100,23 +148,22 @@ const BlockEditor: FC<IProps> = ({
           <div className="mx-10 mb-6">
             <input
               ref={inputRef}
-              defaultValue={title}
+              value={activeItem?.title ?? doc?.title ?? ""}
               className="border-input placeholder:text-muted-foreground flex h-10 w-full rounded-md border border-none bg-background p-0 text-4xl font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="请输入标题..."
               maxLength={100}
               onChange={handlerChange}
               onKeyDown={handlerKeyDown}
+              readOnly={isReadonly}
             />
           </div>
-          {provider && session.data && (
-            <Editor
-              ydoc={ydoc}
-              provider={provider}
-              collabState={collabState}
-              session={session.data}
-              isReadonly={isReadonly}
-            />
-          )}
+          <Editor
+            ydoc={ydoc}
+            provider={provider}
+            collabState={collabState}
+            session={session.data}
+            isReadonly={isReadonly}
+          />
         </div>
       </div>
     </div>

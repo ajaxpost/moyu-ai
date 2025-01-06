@@ -9,12 +9,11 @@ import { Doc as YDoc } from "yjs";
 import { Session } from "next-auth";
 import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu";
 import "./editor.css";
-import { Skeleton } from "../ui/skeleton";
 
 interface IProps {
-  provider: HocuspocusProvider;
+  provider?: HocuspocusProvider;
   ydoc: YDoc;
-  session: Session;
+  session: Session | null;
   collabState: WebSocketStatus;
   isReadonly: boolean;
 }
@@ -48,16 +47,10 @@ export default function Editor({
     }
   }, [users, collabState, characters]);
 
-  return collabState !== WebSocketStatus.Connected ? (
-    <>
-      <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />
-      <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />
-      <Skeleton className="w-1/2 h-[20px] rounded-md mb-2 mx-10" />
-    </>
-  ) : (
-    <>
-      <EditorContent editor={editor} className="focus:outline-none" />
+  return (
+    <div>
       <ImageBlockMenu editor={editor} />
-    </>
+      <EditorContent editor={editor} className="focus:outline-none" />
+    </div>
   );
 }

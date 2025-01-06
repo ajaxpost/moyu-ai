@@ -5,6 +5,7 @@ import { Toolbar } from "@/components/ui/toolbar";
 import { Icon } from "@/components/ui/icon";
 import { sticky } from "tippy.js";
 import { ImageBlockWidth } from "./image-block-width";
+import { getRenderContainer } from "@/lib/utils";
 
 interface IProps {
   editor: Editor | null;
@@ -73,6 +74,16 @@ const ImageBlockMenu: FC<IProps> = ({ editor }) => {
     [editor]
   );
 
+  const getReferenceClientRect = useCallback(() => {
+    if (!editor) return new DOMRect();
+    const renderContainer = getRenderContainer(editor, "node-imageBlock");
+    const rect =
+      renderContainer?.getBoundingClientRect() ||
+      new DOMRect(-1000, -1000, 0, 0);
+
+    return rect;
+  }, [editor]);
+
   return (
     <BubbleMenu
       editor={editor}
@@ -85,13 +96,7 @@ const ImageBlockMenu: FC<IProps> = ({ editor }) => {
         popperOptions: {
           modifiers: [{ name: "flip", enabled: false }],
         },
-        // getReferenceClientRect,
-        // onCreate: (instance: Instance) => {
-        //   tippyInstance.current = instance;
-        // },
-        // appendTo: () => {
-        //   return appendTo?.current;
-        // },
+        getReferenceClientRect,
         plugins: [sticky],
         sticky: "popper",
       }}

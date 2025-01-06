@@ -56,6 +56,14 @@ export const useDocDel = () => {
   );
 };
 
+export const useDocGet = () => {
+  return useSwrMutation("/api/doc/get", (_, { arg }: { arg: { id: string } }) =>
+    fetch(`/api/doc?id=${arg.id}`, {
+      method: "GET",
+    })
+  );
+};
+
 export const useDocUpdatePermission = () => {
   const { toast } = useToast();
   return useSwrMutation(

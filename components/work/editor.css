@@ -232,3 +232,47 @@ li > ol {
   width: 100%;
   max-width: 100%;
 }
+
+.ProseMirror ul[data-type=taskList] {
+  list-style-type: none;
+  padding: 0;
+}
+.ProseMirror ul[data-type=taskList] li {
+  display: flex;
+  /* align-items: center; */
+}
+.ProseMirror ul[data-type=taskList] li>label {
+  margin-top: .25rem;
+  margin-right: .5rem;
+  flex: 1 1 auto;
+  flex-shrink: 0;
+  flex-grow: 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+.ProseMirror ul[data-type=taskList] li>div {
+  flex: 1 1 auto;
+  transform: translateY(2px);
+}
+.ProseMirror ul[data-type=taskList] p {
+  margin: 0;
+}
+.ProseMirror ol:last-child,
+.ProseMirror ul:last-child {
+  margin-bottom: 0;
+}
+
+.ProseMirror ol li,
+.ProseMirror ol ol,
+.ProseMirror ol ul,
+.ProseMirror ul li,
+.ProseMirror ul ol,
+.ProseMirror ul ul {
+  margin-top: .25rem;
+  margin-bottom: .25rem;
+}
+
+.tiptap ul[data-type=taskList] li[data-checked=true] {
+  text-decoration-line: line-through;
+}

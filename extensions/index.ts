@@ -11,6 +11,8 @@ export { TextAlign } from "@tiptap/extension-text-align";
 export { Typography } from "@tiptap/extension-typography";
 export { StarterKit } from "@tiptap/starter-kit";
 export { CharacterCount } from "@tiptap/extension-character-count";
+export { TaskItem } from "@tiptap/extension-task-item";
+export { TaskList } from "@tiptap/extension-task-list";
 
 export { ImageBlock } from "./image-block";
 export { ImageUpload } from "./image-upload";

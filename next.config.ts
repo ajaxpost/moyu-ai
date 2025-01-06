@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     appIsrStatus: true,
   },
   output: "standalone",
+  // output: "export",
   images: {
     remotePatterns: [
       {
