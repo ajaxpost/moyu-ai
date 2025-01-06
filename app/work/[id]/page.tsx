@@ -1,19 +1,6 @@
 import { getDoc } from "@/actions/menu";
 import BlockEditor from "@/components/work/block-editor";
-import { notFound } from "next/navigation";
-import { isEmpty, omit } from "lodash-es";
-
-export async function generateStaticParams() {
-  // const docs = await getStaticIds();
-  // return docs.map((item) => ({
-  //   id: item.id,
-  // }));
-  return [
-    {
-      id: "0",
-    },
-  ];
-}
+import { isHomeId } from "@/shared";
 
 export default async function Page({
   params,
@@ -21,17 +8,11 @@ export default async function Page({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
+
+  if (id === isHomeId) {
+    return <div>首页</div>;
+  }
   const doc = await getDoc(id);
 
-  if (isEmpty(omit(doc, "permission"))) {
-    notFound();
-  }
-
-  return (
-    <BlockEditor
-      title={doc?.title}
-      permission={doc?.permission}
-      userId={doc?.uid}
-    />
-  );
+  return <BlockEditor doc={doc!} />;
 }

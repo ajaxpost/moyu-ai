@@ -62,7 +62,7 @@ export const useBlockEditor = ({
         },
       },
     },
-    [isReadonly]
+    [isReadonly, provider]
   );
 
   const users = useEditorState({

@@ -67,7 +67,10 @@ export async function updateTitle(id: string, title: string) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  return await supabase.from("document_v2").update({ title }).eq("id", id);
+  return await supabase
+    .from("document_v2")
+    .update({ title: title ?? "" })
+    .eq("id", id);
 }
 
 export async function getDoc(id: string) {

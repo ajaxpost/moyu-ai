@@ -12,6 +12,8 @@ import {
   TextAlign,
   Typography,
   CharacterCount,
+  TaskItem,
+  TaskList,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
 
@@ -45,5 +47,9 @@ export const ExtensionKit = () => [
   SlashCommand,
   CharacterCount.configure({
     limit: 50000,
+  }),
+  TaskList,
+  TaskItem.configure({
+    nested: true,
   }),
 ];

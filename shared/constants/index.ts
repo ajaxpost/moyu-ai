@@ -35,3 +35,5 @@ export const userColors = [
   "#a5b4fc",
   "#f0abfc",
 ];
+
+export const isHomeId = "0";

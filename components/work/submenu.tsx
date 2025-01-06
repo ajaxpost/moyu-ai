@@ -23,16 +23,17 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuContext } from "@/context";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
-import Link from "next/link";
+import { isHomeId } from "@/shared";
 
 interface IProps {
   id: string;
   title: string;
   level: number;
   actived: boolean;
+  uid: string;
   onSelect: (key: string) => void;
 }
 
@@ -42,11 +43,14 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   level,
   children,
   actived,
+  uid,
   onSelect,
 }) => {
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const { id: _id } = useParams();
   const activeItem = useStore((state) => state.activeItem);
+  const isNotFound = useStore((state) => state.isNotFound);
+  const router = useRouter();
 
   // @ts-ignore
   const getDelIDs = (data: ReactNode) => {
@@ -79,8 +83,18 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
       activeItem: {
         id,
         title,
+        uid,
       },
     });
+    if (isNotFound || activeItem?.id === isHomeId) {
+      useStore.setState((o) => ({
+        ...o,
+        isNotFound: false,
+      }));
+      router.push(`/work/${_id}`);
+    } else {
+      window.history.pushState({ title }, "", `/work/${id}`);
+    }
   };
 
   return (
@@ -108,13 +122,12 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
             <ChevronRight className="h-4 w-4" />
           )}
         </div>
-        <Link
+        <div
           onClick={handlerClick}
-          href={"/work/" + id}
           className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
           <span className="truncate flex-auto">{title || "<无标题>"}</span>
-        </Link>
+        </div>
         <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

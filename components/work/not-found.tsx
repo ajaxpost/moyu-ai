@@ -1,3 +1,4 @@
+"use client";
 import { Frown } from "lucide-react";
 
 export default function NotFound() {

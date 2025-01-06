@@ -11,17 +11,20 @@ import clsx from "clsx";
 import { MenuContext } from "@/context";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
+import { isHomeId } from "@/shared";
 
 interface IProps {
   id: string;
   title: string;
   level: number;
+  uid: string;
 }
 
-const MenuItem: FC<IProps> = ({ id, title, level }) => {
+const MenuItem: FC<IProps> = ({ id, title, level, uid }) => {
   const { id: _id } = useParams();
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
+  const isNotFound = useStore((state) => state.isNotFound);
   const router = useRouter();
 
   const handlerClick = (_id: string) => {
@@ -29,9 +32,18 @@ const MenuItem: FC<IProps> = ({ id, title, level }) => {
       activeItem: {
         id: _id,
         title,
+        uid,
       },
     });
-    router.push(`/work/${_id}`);
+    if (isNotFound || activeItem?.id === isHomeId) {
+      useStore.setState((o) => ({
+        ...o,
+        isNotFound: false,
+      }));
+      router.push(`/work/${_id}`);
+    } else {
+      window.history.pushState({ title }, "", `/work/${_id}`);
+    }
   };
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {

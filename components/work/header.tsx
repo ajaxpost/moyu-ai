@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { useStore } from "@/store/editor";
+import { useStore as useMenuStore } from "@/store/menu";
 import { useShallow } from "zustand/react/shallow";
 import { EditorUser } from "@/hooks/useBlockEditor";
 import {
@@ -29,9 +30,10 @@ import {
 import { useDocUpdatePermission } from "@/hooks/doc/use-doc-action";
 import { useParams } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
+import { getPermission } from "@/actions/menu";
 
 interface IProps {
-  permission: PermissionEnum;
+  permission?: PermissionEnum;
   isAdmin: boolean;
 }
 
@@ -39,7 +41,7 @@ export default function Header({
   permission = PermissionEnum.PRIVATE,
   isAdmin,
 }: IProps) {
-  const { id } = useParams();
+  const { id: _id } = useParams();
   const [_permission, $permission] = useState(String(permission));
   const { users, collabState, characters } = useStore(
     useShallow((state) => ({
@@ -48,6 +50,21 @@ export default function Header({
       characters: state.characters,
     }))
   );
+  const activeItem = useMenuStore((state) => state.activeItem);
+  const id = (activeItem?.id ?? _id ?? "") as string;
+
+  useEffect(() => {
+    if (!id) return;
+    const regex = /\/work\/([^\/]+)/;
+    const pathname = location.pathname;
+    const match = pathname.match(regex);
+    if (id !== match?.[1]) return;
+    getPermission(id).then((ret) => {
+      if (ret) {
+        $permission(String(ret.permission));
+      }
+    });
+  }, [id]);
 
   const { trigger } = useDocUpdatePermission();
 
@@ -61,11 +78,13 @@ export default function Header({
   );
 
   const handlerPermissionChange = async (v: string) => {
+    $permission(v);
     await trigger({
       id: id as string,
       permission: Number(v) as PermissionEnum,
+    }).catch(() => {
+      $permission(_permission);
     });
-    $permission(v);
   };
 
   return (
