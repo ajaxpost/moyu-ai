@@ -36,7 +36,7 @@ export default async function Sider() {
       </div>
 
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />
-      <Menu list={list || []} />
+      <Menu list={list || []} session={session} />
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />
       <div>
         <AlertDialog>

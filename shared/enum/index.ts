@@ -3,8 +3,9 @@ export enum MenuOptimisticEnum {
   DEL,
 }
 
-// 文档权限 0 私有 1 公开
+// 文档权限 0 私有 1 公开「只读」 2 公开『读写』
 export enum PermissionEnum {
   PRIVATE = 0,
   PUBLIC = 1,
+  PUBLIC_RW = 2,
 }

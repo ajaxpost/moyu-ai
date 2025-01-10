@@ -24,7 +24,11 @@ export async function getMenus() {
   const supabase = createClient(cookieStore);
   const { data } = await supabase
     .from("document_v2")
-    .select("*")
+    .select(
+      `*,permission (
+        permission
+      )`
+    )
     .order("create_at", { ascending: true })
     .eq("uid", session.user.id);
 
@@ -36,6 +40,10 @@ export async function createDoc(id: string, parent_id?: string) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
+  await supabase.from("permission").insert({
+    did: id,
+    permission: PermissionEnum.PRIVATE,
+  });
   const data = await supabase
     .from("document_v2")
     .insert({
@@ -44,10 +52,6 @@ export async function createDoc(id: string, parent_id?: string) {
       parent_id,
     })
     .select();
-  await supabase.from("permission").insert({
-    did: id,
-    permission: PermissionEnum.PRIVATE,
-  });
 
   return data;
 }
@@ -57,8 +61,8 @@ export async function delDoc(ids: string[]) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  const data = await supabase.from("document_v2").delete().in("id", ids);
   await supabase.from("permission").delete().in("did", ids);
+  const data = await supabase.from("document_v2").delete().in("id", ids);
   return data;
 }
 
@@ -80,23 +84,26 @@ export async function getDoc(id: string) {
   const supabase = createClient(cookieStore);
   const { data } = await supabase
     .from("document_v2")
-    .select("*")
+    .select(
+      `*,permission (
+        permission
+      )`
+    )
     .eq("id", id)
     .eq("uid", session.user.id)
     .single();
   const permission = await getPermission(id);
-  if (!data && permission && permission.permission === PermissionEnum.PUBLIC) {
+  if (!data && permission && permission.permission !== PermissionEnum.PRIVATE) {
     const { data } = await supabase
       .from("document_v2")
-      .select("*")
+      .select(
+        `*,permission (
+        permission
+      )`
+      )
       .eq("id", permission.did)
       .single();
-    return {
-      ...data,
-      permission: permission.permission,
-    } as DocumentVO & {
-      permission: PermissionEnum;
-    };
+    return data;
   }
   return {
     ...data,

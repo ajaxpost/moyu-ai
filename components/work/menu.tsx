@@ -1,9 +1,16 @@
 "use client";
-import { FC, useEffect, useState, useRef, useLayoutEffect } from "react";
+import {
+  FC,
+  useEffect,
+  useState,
+  useRef,
+  useLayoutEffect,
+  useMemo,
+} from "react";
 import { ChevronDown, Plus } from "lucide-react";
 import SubMenu from "./submenu";
 import MenuItem from "./menuitem";
-import { DocumentVO } from "@/shared";
+import { DocumentVO, isHomeId } from "@/shared";
 import {
   addMenuItem,
   findMenuItem,
@@ -15,18 +22,22 @@ import {
 import { getMenus } from "@/actions/menu";
 import { Button } from "../ui/button";
 import { MenuContext } from "@/context";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
 import { nanoid } from "nanoid";
 import { useDocAdd, useDocDel } from "@/hooks/doc/use-doc-action";
+import { Session } from "next-auth";
+import { PermissionEnum } from "@/shared/enum";
 
 interface IProps {
   list: DocumentVO[];
+  session: Session | null;
 }
 
-const Menu: FC<IProps> = ({ list }) => {
+const Menu: FC<IProps> = ({ list, session }) => {
   const { id } = useParams();
+  const router = useRouter();
   const [open] = useState<boolean>(true);
   const timeOut = useRef<NodeJS.Timeout | null>(null);
   const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
@@ -35,18 +46,19 @@ const Menu: FC<IProps> = ({ list }) => {
   const { trigger } = useDocAdd();
   const { trigger: delTrigger } = useDocDel();
 
+  const isHome = useMemo(() => id === isHomeId, [id]);
+
   useLayoutEffect(() => {
     if (!id) return;
     const item = findMenuItem(menus, String(id));
     useStore.setState({
-      activeItem:
-        id === "0"
-          ? {
-              id: "0",
-            }
-          : item ?? {
-              id: id as string,
-            },
+      activeItem: isHome
+        ? {
+            id: isHomeId,
+          }
+        : item ?? {
+            id: id as string,
+          },
     });
     const keys = findMenuItemParentKeys(menus, String(id));
     if (keys.length) {
@@ -88,7 +100,7 @@ const Menu: FC<IProps> = ({ list }) => {
   };
   const renderMenu = (data: DocumentVO[], level: number = 0) => {
     return data.map((item, key) => {
-      if (item.children) {
+      if (item.children && item.children?.length) {
         return (
           <SubMenu
             key={item.id}
@@ -98,6 +110,7 @@ const Menu: FC<IProps> = ({ list }) => {
             actived={selectedKeys.some((o) => o === item.id)}
             onSelect={onSelect}
             uid={item.uid}
+            permission={item.permission}
           >
             {renderMenu(item.children, level + 1)}
           </SubMenu>
@@ -110,6 +123,7 @@ const Menu: FC<IProps> = ({ list }) => {
           id={item.id}
           title={item.title}
           uid={item.uid}
+          permission={item.permission}
         />
       );
     });
@@ -122,26 +136,37 @@ const Menu: FC<IProps> = ({ list }) => {
   const onDelDoc = async (ids: string[]) => {
     const newMenus = removeMenuItem(menus, ids);
     setMenus(newMenus);
+    const item = {
+      id: "0",
+    };
     useStore.setState({
-      activeItem: {
-        id: "0",
-      },
+      activeItem: item,
     });
-    window.history.pushState(null, "", `/work/0`);
+    router.push("/work/0");
     await delTrigger({ ids });
   };
 
   const onAddDoc = async (pid?: string) => {
     const id = nanoid();
-    setMenus(addMenuItem(menus, id, pid));
+    const item = {
+      id: id,
+      title: "",
+      uid: session?.user.id,
+      permission: {
+        permission: PermissionEnum.PRIVATE,
+      },
+    };
     useStore.setState({
-      activeItem: { id, pending: true },
+      activeItem: item,
     });
-    window.history.pushState(null, "", `/work/${id}`);
-    await trigger({ id, pid });
-    useStore.setState({
-      activeItem: { id, pending: false },
-    });
+    setMenus(addMenuItem(menus, id, pid, session?.user.id));
+    if (isHome) {
+      await trigger({ id, pid });
+      router.push(`/work/${id}`);
+    } else {
+      window.history.pushState(item, "", `/work/${id}`);
+      await trigger({ id, pid });
+    }
   };
 
   return (

@@ -7,6 +7,7 @@ export interface DocumentVO {
   uid: string;
   created_at: string;
   updated_at: string;
+  permission: { permission: PermissionEnum };
   children?: DocumentVO[];
 }
 

@@ -26,7 +26,7 @@ import { MenuContext } from "@/context";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
-import { isHomeId } from "@/shared";
+import { DocumentVO, isHomeId } from "@/shared";
 
 interface IProps {
   id: string;
@@ -34,6 +34,7 @@ interface IProps {
   level: number;
   actived: boolean;
   uid: string;
+  permission: DocumentVO["permission"];
   onSelect: (key: string) => void;
 }
 
@@ -44,6 +45,7 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   children,
   actived,
   uid,
+  permission,
   onSelect,
 }) => {
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
@@ -79,21 +81,23 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   };
 
   const handlerClick = () => {
+    const item = {
+      id,
+      title: title || "",
+      uid,
+      permission,
+    };
     useStore.setState({
-      activeItem: {
-        id,
-        title,
-        uid,
-      },
+      activeItem: item,
     });
     if (isNotFound || activeItem?.id === isHomeId) {
       useStore.setState((o) => ({
         ...o,
         isNotFound: false,
       }));
-      router.push(`/work/${_id}`);
+      router.push(`/work/${id}`);
     } else {
-      window.history.pushState({ title }, "", `/work/${id}`);
+      window.history.pushState(item, "", `/work/${id}`);
     }
   };
 

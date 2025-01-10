@@ -3,7 +3,6 @@ import { HocuspocusProvider } from "@hocuspocus/provider";
 import { useEditor, useEditorState } from "@tiptap/react";
 import Collaboration from "@tiptap/extension-collaboration";
 import CollaborationCursor from "@tiptap/extension-collaboration-cursor";
-import type { Doc as YDoc } from "yjs";
 import { randomElement } from "@/lib/utils";
 import { userColors } from "@/shared";
 import { User } from "next-auth";
@@ -19,12 +18,10 @@ export type EditorUser = {
 
 export const useBlockEditor = ({
   provider,
-  ydoc,
   user,
   isReadonly,
 }: {
   provider: HocuspocusProvider | undefined;
-  ydoc: YDoc;
   user: User;
   isReadonly: boolean;
 }) => {
@@ -34,7 +31,7 @@ export const useBlockEditor = ({
         ...ExtensionKit(),
         provider
           ? Collaboration.configure({
-              document: ydoc,
+              document: provider.document,
             })
           : undefined,
         provider
