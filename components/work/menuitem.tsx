@@ -11,16 +11,17 @@ import clsx from "clsx";
 import { MenuContext } from "@/context";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
-import { isHomeId } from "@/shared";
+import { DocumentVO, isHomeId } from "@/shared";
 
 interface IProps {
   id: string;
   title: string;
   level: number;
   uid: string;
+  permission: DocumentVO["permission"];
 }
 
-const MenuItem: FC<IProps> = ({ id, title, level, uid }) => {
+const MenuItem: FC<IProps> = ({ id, title, level, uid, permission }) => {
   const { id: _id } = useParams();
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
@@ -28,12 +29,14 @@ const MenuItem: FC<IProps> = ({ id, title, level, uid }) => {
   const router = useRouter();
 
   const handlerClick = (_id: string) => {
+    const item = {
+      id: _id,
+      title: title || "",
+      uid,
+      permission,
+    };
     useStore.setState({
-      activeItem: {
-        id: _id,
-        title,
-        uid,
-      },
+      activeItem: item,
     });
     if (isNotFound || activeItem?.id === isHomeId) {
       useStore.setState((o) => ({
@@ -42,7 +45,7 @@ const MenuItem: FC<IProps> = ({ id, title, level, uid }) => {
       }));
       router.push(`/work/${_id}`);
     } else {
-      window.history.pushState({ title }, "", `/work/${_id}`);
+      window.history.pushState(item, "", `/work/${_id}`);
     }
   };
 
@@ -74,7 +77,7 @@ const MenuItem: FC<IProps> = ({ id, title, level, uid }) => {
           <span
             className="truncate flex-auto"
             style={{
-              marginLeft: (level || 1) * 16,
+              marginLeft: level === 0 ? 16 : level * 24,
             }}
           >
             {title || "<无标题>"}

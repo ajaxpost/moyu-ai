@@ -37,3 +37,5 @@ export const userColors = [
 ];
 
 export const isHomeId = "0";
+
+export * from "./options";

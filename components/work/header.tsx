@@ -30,7 +30,7 @@ import {
 import { useDocUpdatePermission } from "@/hooks/doc/use-doc-action";
 import { useParams } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
-import { getPermission } from "@/actions/menu";
+import { PERMISSION_OPTION } from "@/shared";
 
 interface IProps {
   permission?: PermissionEnum;
@@ -53,19 +53,6 @@ export default function Header({
   const activeItem = useMenuStore((state) => state.activeItem);
   const id = (activeItem?.id ?? _id ?? "") as string;
 
-  useEffect(() => {
-    if (!id) return;
-    const regex = /\/work\/([^\/]+)/;
-    const pathname = location.pathname;
-    const match = pathname.match(regex);
-    if (id !== match?.[1]) return;
-    getPermission(id).then((ret) => {
-      if (ret) {
-        $permission(String(ret.permission));
-      }
-    });
-  }, [id]);
-
   const { trigger } = useDocUpdatePermission();
 
   useEffect(() => {
@@ -73,7 +60,9 @@ export default function Header({
   }, [permission]);
 
   const isPublic = useMemo(
-    () => _permission === String(PermissionEnum.PUBLIC),
+    () =>
+      _permission === String(PermissionEnum.PUBLIC) ||
+      _permission === String(PermissionEnum.PUBLIC_RW),
     [_permission]
   );
 
@@ -163,20 +152,20 @@ export default function Header({
           </>
         )}
 
-        <DropdownMenu>
-          <TooltipV2 title={isPublic ? "公开" : "私密" + "文档"}>
-            <DropdownMenuTrigger className="ml-2" asChild>
-              <Button variant="ghost" size="icon">
-                {isPublic ? (
-                  <LockKeyholeOpen className="w-4 h-4" />
-                ) : (
-                  <LockKeyhole className="w-4 h-4" />
-                )}
-              </Button>
-            </DropdownMenuTrigger>
-          </TooltipV2>
+        {isAdmin ? (
+          <DropdownMenu>
+            <TooltipV2 title={isPublic ? "公开" : "私密" + "文档"}>
+              <DropdownMenuTrigger className="ml-2" asChild>
+                <Button variant="ghost" size="icon">
+                  {isPublic ? (
+                    <LockKeyholeOpen className="w-4 h-4" />
+                  ) : (
+                    <LockKeyhole className="w-4 h-4" />
+                  )}
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipV2>
 
-          {isAdmin && (
             <DropdownMenuContent>
               <DropdownMenuLabel>文档权限</DropdownMenuLabel>
               <DropdownMenuSeparator />
@@ -184,16 +173,30 @@ export default function Header({
                 value={String(_permission)}
                 onValueChange={handlerPermissionChange}
               >
-                <DropdownMenuRadioItem value={String(PermissionEnum.PUBLIC)}>
-                  公开
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value={String(PermissionEnum.PRIVATE)}>
-                  私密
-                </DropdownMenuRadioItem>
+                {PERMISSION_OPTION.map((item) => {
+                  return (
+                    <DropdownMenuRadioItem
+                      key={item.value}
+                      value={String(item.value)}
+                    >
+                      {item.label}
+                    </DropdownMenuRadioItem>
+                  );
+                })}
               </DropdownMenuRadioGroup>
             </DropdownMenuContent>
-          )}
-        </DropdownMenu>
+          </DropdownMenu>
+        ) : (
+          <TooltipV2 title={isPublic ? "公开" : "私密" + "文档"}>
+            <Button variant="ghost" size="icon">
+              {isPublic ? (
+                <LockKeyholeOpen className="w-4 h-4" />
+              ) : (
+                <LockKeyhole className="w-4 h-4" />
+              )}
+            </Button>
+          </TooltipV2>
+        )}
       </div>
       <div className="flex-1 text-end">
         <ModeToggle />

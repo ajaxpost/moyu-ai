@@ -4,24 +4,22 @@ import Editor from "@/components/work/editor";
 import { HocuspocusProvider, WebSocketStatus } from "@hocuspocus/provider";
 import { useEffect, useMemo, useState } from "react";
 import { Doc as YDoc } from "yjs";
-import { useSession } from "next-auth/react";
 import Header from "./header";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { updateTitle } from "@/actions/menu";
 import { isEnter } from "@/shared/hotkey";
-import { PermissionEnum } from "@/shared/enum";
 import { useStore } from "@/store/menu";
 import { DocumentVO, isHomeId } from "@/shared";
-import { isEmpty, omit } from "lodash-es";
-import { notFound } from "next/navigation";
+import { isEmpty } from "lodash-es";
+import { Session } from "next-auth";
+import { PermissionEnum } from "@/shared/enum";
 
 interface IProps {
-  doc: DocumentVO & {
-    permission: PermissionEnum;
-  };
+  doc: DocumentVO;
+  session: Session | null;
 }
 
-const BlockEditor: FC<IProps> = ({ doc }) => {
+const BlockEditor: FC<IProps> = ({ doc, session }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [provider, setProvider] = useState<HocuspocusProvider | undefined>(
     undefined
@@ -30,28 +28,27 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
     provider ? WebSocketStatus.Connecting : WebSocketStatus.Disconnected
   );
   const [isReadonly, setIsReadonly] = useState(true);
-  const session = useSession();
   const activeItem = useStore((state) => state.activeItem);
 
   const id = activeItem?.id === isHomeId ? undefined : activeItem?.id;
 
   const userId = activeItem?.uid ?? doc?.uid;
-  const permission = doc?.permission;
+  const permission =
+    activeItem?.permission?.permission ?? doc?.permission?.permission;
 
   const isAdmin = useMemo(
-    () => userId === session.data?.user.id,
-    [userId, session.data?.user.id]
+    () => userId === session?.user.id,
+    [userId, session?.user.id]
   );
 
   const ydoc = useMemo(() => new YDoc(), [id]);
 
   useLayoutEffect(() => {
-    if (isEmpty(omit(doc, "permission"))) {
+    if (isEmpty(doc)) {
       useStore.setState((o) => ({
         ...o,
         isNotFound: true,
       }));
-      notFound();
     }
     const controller = new AbortController();
     // 监听 popstate 事件
@@ -63,11 +60,11 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
         const match = pathname.match(regex);
         if (match) {
           const id = match[1];
-          const { title } = event.state;
+          const item = event.state;
           useStore.setState({
             activeItem: {
+              ...item,
               id,
-              title,
             },
           });
         }
@@ -84,7 +81,10 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
 
   useEffect(() => {
     if (!userId || !id) return;
-    const token: string = isAdmin ? userId : "readonly";
+    let token: string = isAdmin ? userId : "readonly";
+    if (!isAdmin && permission === PermissionEnum.PUBLIC_RW) {
+      token = userId;
+    }
     const provider = new HocuspocusProvider({
       url: "ws://112.126.23.48:9090",
       name: `doc_${id}`,
@@ -104,10 +104,10 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
     });
     setProvider(provider);
     return () => {
-      provider.disconnect();
-      provider.destroy();
+      provider?.disconnect();
+      provider?.destroy();
     };
-  }, [ydoc, isAdmin, userId, id]);
+  }, [ydoc, userId]);
 
   const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -135,6 +135,10 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
     }
   };
 
+  if (isEmpty(doc)) {
+    return <>not found</>;
+  }
+
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden">
       <Header permission={permission} isAdmin={isAdmin} />
@@ -148,7 +152,12 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
           <div className="mx-10 mb-6">
             <input
               ref={inputRef}
-              value={activeItem?.title ?? doc?.title ?? ""}
+              value={
+                activeItem?.title ??
+                // localStorage.getItem("doc_title") ??
+                doc?.title ??
+                ""
+              }
               className="border-input placeholder:text-muted-foreground flex h-10 w-full rounded-md border border-none bg-background p-0 text-4xl font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               placeholder="请输入标题..."
               maxLength={100}
@@ -158,10 +167,9 @@ const BlockEditor: FC<IProps> = ({ doc }) => {
             />
           </div>
           <Editor
-            ydoc={ydoc}
             provider={provider}
             collabState={collabState}
-            session={session.data}
+            session={session}
             isReadonly={isReadonly}
           />
         </div>

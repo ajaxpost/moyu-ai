@@ -1,5 +1,6 @@
 import { DocumentVO } from "../entity";
 import { cloneDeep } from "lodash-es";
+import { PermissionEnum } from "../enum";
 
 export function getMenuTreeData(data: DocumentVO[]): DocumentVO[] {
   const cloneDate = cloneDeep(data);
@@ -41,7 +42,12 @@ export function getMenuSelectedKeys(
   return selectedKeys;
 }
 
-export function addMenuItem(data: DocumentVO[], id: string, pid?: string) {
+export function addMenuItem(
+  data: DocumentVO[],
+  id: string,
+  pid?: string,
+  uid?: string
+) {
   const _data = cloneDeep(data);
   const defaultItem: DocumentVO = {
     id,
@@ -49,7 +55,10 @@ export function addMenuItem(data: DocumentVO[], id: string, pid?: string) {
     title: "",
     created_at: "",
     updated_at: "",
-    uid: "",
+    uid: uid || "",
+    permission: {
+      permission: PermissionEnum.PRIVATE,
+    },
   };
   if (!pid) return [..._data, defaultItem];
   const findChild = (data: DocumentVO[]) => {

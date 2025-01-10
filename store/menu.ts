@@ -3,11 +3,7 @@ import { create } from "zustand";
 import { devtools } from "zustand/middleware";
 
 interface MenuState {
-  activeItem?: Partial<
-    DocumentVO & {
-      pending: boolean;
-    }
-  >;
+  activeItem?: Partial<DocumentVO>;
   isNotFound: boolean;
 }
 
