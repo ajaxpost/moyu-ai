@@ -13,6 +13,11 @@ export { StarterKit } from "@tiptap/starter-kit";
 export { CharacterCount } from "@tiptap/extension-character-count";
 export { TaskItem } from "@tiptap/extension-task-item";
 export { TaskList } from "@tiptap/extension-task-list";
+export { Underline } from "@tiptap/extension-underline";
+export { Color } from "@tiptap/extension-color";
+export { TextStyle } from "@tiptap/extension-text-style";
+export { Subscript } from "@tiptap/extension-subscript";
+export { Superscript } from "@tiptap/extension-superscript";
 
 export { ImageBlock } from "./image-block";
 export { ImageUpload } from "./image-upload";

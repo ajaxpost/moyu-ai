@@ -1,7 +1,7 @@
-import { cn } from '@/lib/utils';
-import { Node } from '@tiptap/pm/model';
-import { Editor, NodeViewWrapper } from '@tiptap/react';
-import { useCallback, useRef } from 'react';
+import { cn } from "@/lib/utils";
+import { Node } from "@tiptap/pm/model";
+import { Editor, NodeViewWrapper } from "@tiptap/react";
+import { useCallback, useRef } from "react";
 
 interface ImageBlockViewProps {
   editor: Editor;
@@ -22,9 +22,9 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
   const { src } = node.attrs;
 
   const wrapperClassName = cn(
-    node.attrs.align === 'left' ? 'ml-0' : 'ml-auto',
-    node.attrs.align === 'right' ? 'mr-0' : 'mr-auto',
-    node.attrs.align === 'center' && 'mx-auto'
+    node.attrs.align === "left" ? "ml-0" : "ml-auto",
+    node.attrs.align === "right" ? "mr-0" : "mr-auto",
+    node.attrs.align === "center" && "mx-auto"
   );
 
   const onClick = useCallback(() => {

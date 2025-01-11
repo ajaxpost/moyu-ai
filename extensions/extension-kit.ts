@@ -14,6 +14,11 @@ import {
   CharacterCount,
   TaskItem,
   TaskList,
+  Underline,
+  Color,
+  TextStyle,
+  Subscript,
+  Superscript,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
 
@@ -33,9 +38,16 @@ export const ExtensionKit = () => [
       return ReactNodeViewRenderer(CodeBlockComponent);
     },
   }),
-  Highlight,
+  Highlight.configure({ multicolor: true }),
   Typography,
-  TextAlign,
+  // TextAlign,
+  TextAlign.extend({
+    addKeyboardShortcuts() {
+      return {};
+    },
+  }).configure({
+    types: ["heading", "paragraph"],
+  }),
   ImageBlock,
   ImageUpload,
   Placeholder.configure({
@@ -52,4 +64,9 @@ export const ExtensionKit = () => [
   TaskItem.configure({
     nested: true,
   }),
+  Underline,
+  Color,
+  TextStyle,
+  Subscript,
+  Superscript,
 ];
