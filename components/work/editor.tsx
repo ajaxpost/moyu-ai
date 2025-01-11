@@ -7,9 +7,10 @@ import { useStore as useEditorStore } from "@/store/editor";
 import { WebSocketStatus, HocuspocusProvider } from "@hocuspocus/provider";
 import { Session } from "next-auth";
 import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu";
-import "./editor.css";
 import { Skeleton } from "../ui/skeleton";
 import { isSave } from "@/shared/hotkey";
+import TextMenu from "./menus/text-menu";
+import "./editor.css";
 
 interface IProps {
   provider?: HocuspocusProvider;
@@ -51,7 +52,7 @@ export default function Editor({
     }
   };
 
-  return collabState !== WebSocketStatus.Connected || !provider ? (
+  return collabState !== WebSocketStatus.Connected || !provider || !editor ? (
     <>
       <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />
       <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />
@@ -59,6 +60,7 @@ export default function Editor({
     </>
   ) : (
     <div>
+      <TextMenu editor={editor} />
       <ImageBlockMenu editor={editor} />
       <EditorContent
         editor={editor}

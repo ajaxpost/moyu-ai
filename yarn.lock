@@ -1557,6 +1557,27 @@
     "@radix-ui/react-roving-focus" "1.1.1"
     "@radix-ui/react-use-controllable-state" "1.1.0"
 
+"@radix-ui/react-popover@^1.1.4":
+  version "1.1.4"
+  resolved "https://registry.npmmirror.com/@radix-ui/react-popover/-/react-popover-1.1.4.tgz#d83104e5fb588870a673b55f3387da4844e5836e"
+  integrity sha512-aUACAkXx8LaFymDma+HQVji7WhvEhpFJ7+qPz17Nf4lLZqtreGOFRiNQWQmhzp7kEWg9cOyyQJpdIMUMPc/CPw==
+  dependencies:
+    "@radix-ui/primitive" "1.1.1"
+    "@radix-ui/react-compose-refs" "1.1.1"
+    "@radix-ui/react-context" "1.1.1"
+    "@radix-ui/react-dismissable-layer" "1.1.3"
+    "@radix-ui/react-focus-guards" "1.1.1"
+    "@radix-ui/react-focus-scope" "1.1.1"
+    "@radix-ui/react-id" "1.1.0"
+    "@radix-ui/react-popper" "1.2.1"
+    "@radix-ui/react-portal" "1.1.3"
+    "@radix-ui/react-presence" "1.1.2"
+    "@radix-ui/react-primitive" "2.0.1"
+    "@radix-ui/react-slot" "1.1.1"
+    "@radix-ui/react-use-controllable-state" "1.1.0"
+    aria-hidden "^1.1.1"
+    react-remove-scroll "^2.6.1"
+
 "@radix-ui/react-popper@1.2.1":
   version "1.2.1"
   resolved "https://registry.npmmirror.com/@radix-ui/react-popper/-/react-popper-1.2.1.tgz#2fc66cfc34f95f00d858924e3bee54beae2dff0a"
@@ -1973,6 +1994,11 @@
   resolved "https://registry.npmmirror.com/@tiptap/extension-collaboration/-/extension-collaboration-2.11.0.tgz#21ac1c8bc2ca6d8ba2a838e63457528627294888"
   integrity sha512-pS3E//ODD80PwVXp7zOqek0q9z5AtZ6sMSK5nPneNioe7dSvCeQzToOD9V6EevK4KChUIN9wEryK8mkQs57ioA==
 
+"@tiptap/extension-color@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-color/-/extension-color-2.10.3.tgz#97e77235dc20adc96c1034b48cfe7ce20040864d"
+  integrity sha512-FC2hPMSQ4w9UmO9kJCAdoU7gHpDbJ6MeJAmikB9EPp16dbGwFLrZm9TZ/4pv74fGfVm0lv720316ALOEgPEDjQ==
+
 "@tiptap/extension-document@^2.10.3", "@tiptap/extension-document@^2.11.0":
   version "2.11.0"
   resolved "https://registry.npmmirror.com/@tiptap/extension-document/-/extension-document-2.11.0.tgz#dcae7bc3a29b279ddbf88fc2b248817705ccb8a6"
@@ -2055,20 +2081,35 @@
   resolved "https://registry.npmmirror.com/@tiptap/extension-strike/-/extension-strike-2.11.0.tgz#8507cfb501f4950d869f8ddd1adb47b66680765f"
   integrity sha512-71i2IZT58kY2ohlhyO+ucyAioNNCkNkuPkrVERc9lXhmcCKOff5y6ekDHQHO2jNjnejkVE5ibyDO3Z7RUXjh1A==
 
-"@tiptap/extension-task-item@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.npmmirror.com/@tiptap/extension-task-item/-/extension-task-item-2.11.0.tgz#ff97f10bf39d6c27fd3f3f1ee3987d7015304c11"
-  integrity sha512-qu6VuRc8qF80Bwr82CItFcrKtC67LJkwpxESLEIi42zWZ5sXF/3DJEPPS/4Kk+nAc9UCBoEMFAULibPq7rRl/w==
+"@tiptap/extension-subscript@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-subscript/-/extension-subscript-2.10.3.tgz#3d74cdbcd1dcd661791708559e88c7313202b577"
+  integrity sha512-GkOwXIruM7QksmlfqLTKTC6JBpWSBDN2eeoPwggxXuqetqYs4sIx1ul3LEGDQy0vglcFKGkbbO2IiHCO/0fSWA==
 
-"@tiptap/extension-task-list@^2.11.0":
-  version "2.11.0"
-  resolved "https://registry.npmmirror.com/@tiptap/extension-task-list/-/extension-task-list-2.11.0.tgz#2f197a70aafc0c23163ed70aa314cc0300534cf6"
-  integrity sha512-+dZRjeXLXxyliFt3J7uQADxfOwi6ntyepVM+ri1rnmIaqVZUHJbUFodOc0LivI+Z5iZZ10u3TId8gehqWJHD+w==
+"@tiptap/extension-superscript@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-superscript/-/extension-superscript-2.10.3.tgz#2b4f186ddb179bcdf2af68d4aebc5e1f3220de2b"
+  integrity sha512-4bXDPyT10ByVCLXFR8A70TcpFJ0H3PicRsxKJcQ+KZIauNUo5BBUpkF2cK+IOUp4UZ1W5ZBeuMQG5HWMuV9T1A==
+
+"@tiptap/extension-task-item@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-task-item/-/extension-task-item-2.10.3.tgz#ff64d8620198796266b46e5a27c48ccd31b90b94"
+  integrity sha512-vE4qxGrZTdwynHq6l5xN0jI0ahDZpmKeoD6yuCMNyN831dgHXEjNrV8oBtZUvvqChFRc/LiSmUbrTInUn5xeNg==
+
+"@tiptap/extension-task-list@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-task-list/-/extension-task-list-2.10.3.tgz#8a6f2c009f844e1a98395d26140f1045d3efbd5c"
+  integrity sha512-Zj1pj+6VrL8VXlFYWdcLlCMykzARsvdqdU8cGVnBuC0H0vrSSfLGl+GxGnQwxTnqiNtxR4t70DLi/UjFBvzlqw==
 
 "@tiptap/extension-text-align@^2.10.3":
   version "2.11.0"
   resolved "https://registry.npmmirror.com/@tiptap/extension-text-align/-/extension-text-align-2.11.0.tgz#b90b86ee3f6e14c9abf186cb8ab6ced20c0df14d"
   integrity sha512-VRXBqO17po6ddqhoWLBa2aCX/tqHdzdKPLfjnBy1fF8hjQKbidzjMWhb4CMm31ApvJjKK/DTkM3EnyYS/XDhng==
+
+"@tiptap/extension-text-style@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-text-style/-/extension-text-style-2.10.3.tgz#fcc93de8d0479b893c2a000ad7e3dc20b944f3dd"
+  integrity sha512-TalYIdlF7vBA4afFhmido7AORdBbu3sV+HCByda0FiNbM6cjng3Nr9oxHOCVJy+ChqrcgF4m54zDfLmamdyu5Q==
 
 "@tiptap/extension-text-style@^2.11.0":
   version "2.11.0"
@@ -2084,6 +2125,11 @@
   version "2.11.0"
   resolved "https://registry.npmmirror.com/@tiptap/extension-typography/-/extension-typography-2.11.0.tgz#d2a752ccd46b5d3b2106a8f6be5c0e3bb966a867"
   integrity sha512-cQ0ipta3e/ry69KA4m4ygjLCGRyMDrp+rxJNlGwEB4IvE4FoR6EqHpgwceu7cQm6rc19v4yt/T88jdUWtqfXgQ==
+
+"@tiptap/extension-underline@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-underline/-/extension-underline-2.10.3.tgz#83d392bd4d0b2344c590c19736bb89d208c413df"
+  integrity sha512-VeGs0jeNiTnXddHHJEgOc/sKljZiyTEgSSuqMmsBACrr9aGFXbLTgKTvNjkZ9WzSnu7LwgJuBrwEhg8yYixUyQ==
 
 "@tiptap/pm@^2.10.3", "@tiptap/pm@^2.11.0":
   version "2.11.0"
@@ -4942,6 +4988,11 @@ queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmmirror.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
   integrity sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==
+
+react-colorful@^5.6.1:
+  version "5.6.1"
+  resolved "https://registry.npmmirror.com/react-colorful/-/react-colorful-5.6.1.tgz#7dc2aed2d7c72fac89694e834d179e32f3da563b"
+  integrity sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==
 
 react-dom@^19.0.0:
   version "19.0.0"
