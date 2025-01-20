@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, KeyboardEvent } from "react";
+import { useEffect, KeyboardEvent, useRef } from "react";
 import { useBlockEditor } from "@/hooks/useBlockEditor";
 import { EditorContent } from "@tiptap/react";
 import { useStore as useEditorStore } from "@/store/editor";
@@ -11,6 +11,7 @@ import { Skeleton } from "../ui/skeleton";
 import { isSave } from "@/shared/hotkey";
 import TextMenu from "./menus/text-menu";
 import "./editor.css";
+import LinkMenu from "./menus/link-menu";
 
 interface IProps {
   provider?: HocuspocusProvider;
@@ -25,6 +26,7 @@ export default function Editor({
   collabState,
   isReadonly,
 }: IProps) {
+  const menuContainerRef = useRef(null);
   const { editor, users, characters } = useBlockEditor({
     provider,
     user: session?.user || {
@@ -59,7 +61,8 @@ export default function Editor({
       <Skeleton className="w-1/2 h-[20px] rounded-md mb-2 mx-10" />
     </>
   ) : (
-    <div>
+    <div ref={menuContainerRef}>
+      <LinkMenu editor={editor} appendTo={menuContainerRef} />
       <TextMenu editor={editor} />
       <ImageBlockMenu editor={editor} />
       <EditorContent

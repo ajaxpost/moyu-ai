@@ -276,3 +276,8 @@ li > ol {
 .tiptap ul[data-type=taskList] li[data-checked=true] {
   text-decoration-line: line-through;
 }
+.ProseMirror a.link {
+  font-weight: 800;
+  color: rgb(59,130,246);
+  text-decoration: underline;
+}

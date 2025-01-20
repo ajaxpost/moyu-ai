@@ -1,6 +1,6 @@
 import { Editor } from "@tiptap/react";
 
-import { HorizontalRule, ImageBlock, ImageUpload } from "@/extensions";
+import { HorizontalRule, ImageBlock, ImageUpload, Link } from "@/extensions";
 
 export const isTableGripSelected = (node: HTMLElement) => {
   let container = node;
@@ -32,6 +32,7 @@ export const isCustomNodeSelected = (editor: Editor, node: HTMLElement) => {
     ImageUpload.name,
     ImageBlock.name,
     // CodeBlockLowlight.name,
+    Link.name,
   ];
 
   return (

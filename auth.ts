@@ -1,12 +1,21 @@
 import NextAuth from "next-auth";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import GitHub from "next-auth/providers/github";
+import Gitee from "./providers/gitee";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
+  pages: {
+    // signIn: "/",
+    signOut: "/",
+  },
   providers: [
     GitHub({
       clientId: process.env.AUTH_GITHUB_ID!,
       clientSecret: process.env.AUTH_GITHUB_SECRET!,
+    }),
+    Gitee({
+      clientId: process.env.GITEE_CLIENT_ID,
+      clientSecret: process.env.GITEE_CLIENT_SECRET,
     }),
   ],
   trustHost: true,
@@ -16,7 +25,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   }),
   debug: false,
   callbacks: {
-    async session({ session /** user **/ }) {
+    async session({
+      session,
+      // user
+    }) {
       // const signingSecret = process.env.SUPABASE_JWT_SECRET;
       // if (signingSecret) {
       //   const payload = {
@@ -28,7 +40,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       //   };
       //   session.supabaseAccessToken = jwt.sign(payload, signingSecret);
       // }
-      // session.userId = user.id;
+      // session.userId = user.id ;
       return session;
     },
   },

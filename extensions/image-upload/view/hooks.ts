@@ -1,3 +1,4 @@
+import { uploadImage } from "@/actions/oss";
 import { DragEvent, useCallback, useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -13,10 +14,15 @@ export const useUploader = ({
       setLoading(true);
       console.log(file);
       try {
-        // const url = await API.uploadImage(file);
-        const url = "https://avatars.githubusercontent.com/u/74407992?v=4";
+        const result = await uploadImage(file);
+        // const url = "https://avatars.githubusercontent.com/u/74407992?v=4";
+        const url = result?.url;
+        if (url) {
+          onUpload(url);
+        } else {
+          alert("找不到图片地址，请稍后重试，谢谢配合");
+        }
 
-        onUpload(url);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (errPayload: any) {
         const error =
