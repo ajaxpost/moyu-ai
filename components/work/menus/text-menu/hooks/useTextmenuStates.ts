@@ -8,8 +8,6 @@ export const useTextmenuStates = (editor: Editor) => {
   const states = useEditorState({
     editor,
     selector: (ctx) => {
-      console.log(ctx.editor, ">>>");
-
       return {
         isBold: ctx.editor.isActive("bold"),
         isItalic: ctx.editor.isActive("italic"),

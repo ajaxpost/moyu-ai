@@ -50,6 +50,7 @@ export default function Header({
       characters: state.characters,
     }))
   );
+
   const activeItem = useMenuStore((state) => state.activeItem);
   const id = (activeItem?.id ?? _id ?? "") as string;
 

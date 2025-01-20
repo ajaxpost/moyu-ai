@@ -9,6 +9,7 @@ import { useTextmenuCommands } from "./hooks/useTextmenuCommands";
 import * as Popover from "@radix-ui/react-popover";
 import { Surface } from "@/components/ui/surface";
 import { ColorPicker } from "@/components/panels";
+import { EditLinkPopover } from "./components/edit-link-popover";
 
 interface IProps {
   editor: Editor;
@@ -93,7 +94,7 @@ const TextMenu: FC<IProps> = ({ editor }) => {
         <Toolbar.Button tooltip="代码块" onClick={commands.onCodeBlock}>
           <Icon name="FileCode" />
         </Toolbar.Button>
-        {/* Link 链接 TODO */}
+        <EditLinkPopover onSetLink={commands.onLink} />
         <Popover.Root>
           <Popover.Trigger asChild>
             <Toolbar.Button
@@ -131,7 +132,7 @@ const TextMenu: FC<IProps> = ({ editor }) => {
         </Popover.Root>
         <Popover.Root>
           <Popover.Trigger asChild>
-            <Toolbar.Button tooltip="More options">
+            <Toolbar.Button tooltip="更多选项">
               <Icon name="EllipsisVertical" />
             </Toolbar.Button>
           </Popover.Trigger>

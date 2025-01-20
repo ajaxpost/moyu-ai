@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/u/**",
       },
+      {
+        protocol: "https",
+        hostname: "foruda.gitee.com",
+        port: "",
+        pathname: "/avatar/**",
+      },
     ],
   },
   experimental: {

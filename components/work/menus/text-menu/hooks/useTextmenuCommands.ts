@@ -69,6 +69,16 @@ export const useTextmenuCommands = (editor: Editor) => {
     [editor]
   );
 
+  const onLink = useCallback(
+    (url: string, inNewTab?: boolean) =>
+      editor
+        .chain()
+        .focus()
+        .setLink({ href: url, target: inNewTab ? "_blank" : "" })
+        .run(),
+    [editor]
+  );
+
   return {
     onBold,
     onItalic,
@@ -86,5 +96,6 @@ export const useTextmenuCommands = (editor: Editor) => {
     onClearColor,
     onChangeHighlight,
     onClearHighlight,
+    onLink,
   };
 };

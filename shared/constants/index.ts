@@ -47,4 +47,6 @@ export const themeColors = [
   "#a5b4fc",
 ];
 
+export const OSS_BUCKET = "moyu-assert";
+
 export * from "./options";

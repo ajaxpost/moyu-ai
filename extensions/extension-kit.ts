@@ -19,6 +19,7 @@ import {
   TextStyle,
   Subscript,
   Superscript,
+  Link,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
 
@@ -40,7 +41,6 @@ export const ExtensionKit = () => [
   }),
   Highlight.configure({ multicolor: true }),
   Typography,
-  // TextAlign,
   TextAlign.extend({
     addKeyboardShortcuts() {
       return {};
@@ -69,4 +69,8 @@ export const ExtensionKit = () => [
   TextStyle,
   Subscript,
   Superscript,
+  Link.configure({
+    openOnClick: false,
+    autolink: true,
+  }),
 ];

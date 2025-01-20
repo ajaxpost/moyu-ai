@@ -40,10 +40,7 @@ export async function createDoc(id: string, parent_id?: string) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  await supabase.from("permission").insert({
-    did: id,
-    permission: PermissionEnum.PRIVATE,
-  });
+
   const data = await supabase
     .from("document_v2")
     .insert({
@@ -52,6 +49,10 @@ export async function createDoc(id: string, parent_id?: string) {
       parent_id,
     })
     .select();
+  await supabase.from("permission").insert({
+    did: id,
+    permission: PermissionEnum.PRIVATE,
+  });
 
   return data;
 }

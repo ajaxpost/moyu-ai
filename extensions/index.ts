@@ -22,3 +22,4 @@ export { Superscript } from "@tiptap/extension-superscript";
 export { ImageBlock } from "./image-block";
 export { ImageUpload } from "./image-upload";
 export { SlashCommand } from "./slash-command";
+export { Link } from "./link";
