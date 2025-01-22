@@ -1937,7 +1937,17 @@
   dependencies:
     tippy.js "^6.3.1"
 
-"@tiptap/core@^2.10.3", "@tiptap/core@^2.11.0":
+"@tiptap-pro/extension-file-handler@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.tiptap.dev/@tiptap-pro%2fextension-file-handler/-/extension-file-handler-2.10.3.tgz#8740fb94c481379683046f204423f65090c9b86f"
+  integrity sha512-MzC0eAJz0iZ0JsWKZLi/ecBNw1qUKVwiIC15Yz+CpKQ8O81/217m3R51q6iJ8bzEISKNHxBlxJN/M3NNuqU6Mg==
+
+"@tiptap/core@^2.10.3":
+  version "2.11.2"
+  resolved "https://registry.npmmirror.com/@tiptap/core/-/core-2.11.2.tgz#d9d4bd912ee12d4127180e60d2672605c208baf7"
+  integrity sha512-Z437c/sQg31yrRVgLJVkQuih+7Og5tjRx6FE/zE47QgEayqQ9yXH0LrTAbPiY6IfY1X+f2A0h3e5Y/WGD6rC3Q==
+
+"@tiptap/core@^2.11.0":
   version "2.11.0"
   resolved "https://registry.npmmirror.com/@tiptap/core/-/core-2.11.0.tgz#72891ae9b3e4b2a67f79ab3bcb14483d30a9bd8a"
   integrity sha512-0S3AWx6E2QqwdQqb6z0/q6zq2u9lA9oL3BLyAaITGSC9zt8OwjloS2k1zN6wLa9hp2rO0c0vDnWsTPeFaEaMdw==
@@ -1973,6 +1983,11 @@
   version "2.11.0"
   resolved "https://registry.npmmirror.com/@tiptap/extension-code-block-lowlight/-/extension-code-block-lowlight-2.11.0.tgz#feed0db830756de5b28ebd4a72ac7b4a74ad6f44"
   integrity sha512-B9UeQhcy5lQCOQWRFMruLXd1ghwUwTXCcDkYAX3yTPjC7blVHPJaocFSkq5LFsKQLV0Y0VXSpX9oNztp5lI7+A==
+
+"@tiptap/extension-code-block@^2.10.3":
+  version "2.11.2"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-code-block/-/extension-code-block-2.11.2.tgz#81f43250c5514bcd24e04544e0d645c1a9f1ffce"
+  integrity sha512-O6gVfql3uFZNq9yaUDa98VgV58BqaUSeOUnhZwLzpB/4VlqzTyW6/kvFxhKcSp7f+GmrMQaV4PXRs+tZcq6EFw==
 
 "@tiptap/extension-code-block@^2.11.0":
   version "2.11.0"
@@ -2015,6 +2030,11 @@
   integrity sha512-dexhhUJm0x9OolbeVCa7RpxuALU3bJZC7dFpu/rPG3ZetXKhVw8hTrqUQD5w1DjXpczBzScnLgLrvnjxbG66pw==
   dependencies:
     tippy.js "^6.3.7"
+
+"@tiptap/extension-focus@2.10.3":
+  version "2.10.3"
+  resolved "https://registry.npmmirror.com/@tiptap/extension-focus/-/extension-focus-2.10.3.tgz#367741e17bb08fe354f27c17e4dd642d35745232"
+  integrity sha512-/zJHmngINGaJ3uHxOVXi2hmDTh5kuJKy0E5pLMokcaAICmyr1u+7Zq6ltKS2Hwmo4AQ2Dl6Hcr1IIMEHXo6Y8g==
 
 "@tiptap/extension-gapcursor@^2.11.0":
   version "2.11.0"

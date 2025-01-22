@@ -1,4 +1,4 @@
-import { PermissionEnum } from "../enum";
+import { PermissionEnum, PowerEnum } from "../enum";
 
 export const PERMISSION_OPTION = [
   {
@@ -12,5 +12,16 @@ export const PERMISSION_OPTION = [
   {
     label: "公开「读写」",
     value: PermissionEnum.PUBLIC_RW,
+  },
+];
+
+export const POWER_OPTION = [
+  {
+    label: "可阅读",
+    value: PowerEnum.READ,
+  },
+  {
+    label: "可编辑",
+    value: PowerEnum.EDIT,
   },
 ];

@@ -7,14 +7,15 @@ import {
   useLayoutEffect,
   useMemo,
 } from "react";
-import { ChevronDown, Plus } from "lucide-react";
+import { ChevronDown, ChevronRight, Plus } from "lucide-react";
 import SubMenu from "./submenu";
 import MenuItem from "./menuitem";
-import { DocumentVO, isHomeId } from "@/shared";
+import { DocumentVO, isHomeId, ShareEntiry, UserInfo } from "@/shared";
 import {
   addMenuItem,
   findMenuItem,
   findMenuItemParentKeys,
+  findShareMenuItemParentKeys,
   getMenuTreeData,
   removeMenuItem,
   updateTitle,
@@ -29,19 +30,39 @@ import { nanoid } from "nanoid";
 import { useDocAdd, useDocDel } from "@/hooks/doc/use-doc-action";
 import { Session } from "next-auth";
 import { PermissionEnum } from "@/shared/enum";
+import { groupBy, isEmpty, map } from "lodash-es";
+import { Badge } from "@/components/ui/badge";
+
+export type ShareListType = (DocumentVO & {
+  currentShare: ShareEntiry & {
+    userInfo?: UserInfo;
+  };
+})[];
 
 interface IProps {
   list: DocumentVO[];
+  shareList: ShareListType;
   session: Session | null;
 }
 
-const Menu: FC<IProps> = ({ list, session }) => {
+const Menu: FC<IProps> = ({ list, shareList, session }) => {
   const { id } = useParams();
   const router = useRouter();
-  const [open] = useState<boolean>(true);
+  const [open, setOpen] = useState<boolean>(true);
+  const [shareOpen, setShareOpen] = useState<boolean>(true);
   const timeOut = useRef<NodeJS.Timeout | null>(null);
-  const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
   const [menus, setMenus] = useState<DocumentVO[]>(getMenuTreeData(list));
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(() => {
+    const keys = findShareMenuItemParentKeys(shareList, String(id));
+    if (keys.length) {
+      setOpen(false);
+      return keys;
+    }
+    setShareOpen(false);
+
+    return findMenuItemParentKeys(menus, String(id));
+  });
+  const group = groupBy(shareList, "uid");
 
   const { trigger } = useDocAdd();
   const { trigger: delTrigger } = useDocDel();
@@ -60,10 +81,6 @@ const Menu: FC<IProps> = ({ list, session }) => {
             id: id as string,
           },
     });
-    const keys = findMenuItemParentKeys(menus, String(id));
-    if (keys.length) {
-      setSelectedKeys(keys);
-    }
   }, []);
 
   useEffect(() => {
@@ -129,6 +146,43 @@ const Menu: FC<IProps> = ({ list, session }) => {
     });
   };
 
+  const renderShareMenu = (data: Record<string, ShareListType>) => {
+    return map(data, (value, key) => {
+      if (value.length) {
+        const userInfo = value[0].currentShare?.userInfo;
+        return (
+          <SubMenu
+            key={key}
+            level={0}
+            id={key}
+            title={userInfo?.name ?? "未知"}
+            actived={selectedKeys.some((o) => o === key)}
+            onSelect={onSelect}
+            badge={
+              <Badge className="px-1.5 mr-1 rounded-full bg-red-100 hover:bg-red-100 text-foreground">
+                {value.length}
+              </Badge>
+            }
+          >
+            {value.map((item, key) => {
+              return (
+                <MenuItem
+                  key={item.id + "_" + key}
+                  level={0}
+                  id={item.id}
+                  title={item.title}
+                  uid={item.uid}
+                  permission={item.permission}
+                  currentShare={item.currentShare}
+                />
+              );
+            })}
+          </SubMenu>
+        );
+      }
+    });
+  };
+
   const handlerAddMenuItem = async () => {
     onAddDoc();
   };
@@ -179,17 +233,50 @@ const Menu: FC<IProps> = ({ list, session }) => {
       }}
     >
       <div className="flex-auto overflow-y-auto">
+        {!isEmpty(group) ? (
+          <div className="mb-2">
+            <div className="flex justify-between items-center">
+              <h3 className="px-1 mt-1 mb-1 text-sm font-bold flex items-center cursor-pointer">
+                <div
+                  className="hover:bg-active rounded-full p-0.5"
+                  onClick={() => setShareOpen(!shareOpen)}
+                >
+                  {shareOpen ? (
+                    <ChevronDown className="h-4 w-4" />
+                  ) : (
+                    <ChevronRight className="h-4 w-4" />
+                  )}
+                </div>
+                <span>
+                  他人文档
+                  <Badge className="px-1.5 ml-1 rounded-full bg-red-300 hover:bg-red-300 text-foreground">
+                    {shareList.length}
+                  </Badge>
+                </span>
+              </h3>
+            </div>
+            {shareOpen && renderShareMenu(group)}
+          </div>
+        ) : null}
         <div className="mb-2">
           <div className="flex justify-between items-center">
             <h3 className="px-1 mt-1 mb-1 text-sm font-bold flex items-center cursor-pointer">
-              <div className="hover:bg-active rounded-full p-0.5">
-                <ChevronDown className="h-4 w-4" />
+              <div
+                className="hover:bg-active rounded-full p-0.5"
+                onClick={() => setOpen(!open)}
+              >
+                {open ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
               </div>
               <span>我的文档</span>
             </h3>
           </div>
           {open && renderMenu(menus)}
         </div>
+
         {/* 新建文档 */}
         <div>
           <Button

@@ -20,8 +20,13 @@ import {
   Subscript,
   Superscript,
   Link,
+  FileHandler,
+  Focus,
+  TrailingNode,
+  Document,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
+import { uploadImage } from "@/actions/oss";
 
 const lowlight = createLowlight(all);
 
@@ -30,7 +35,9 @@ export const ExtensionKit = () => [
     codeBlock: false,
     horizontalRule: false,
     history: false,
+    document: false,
   }),
+  Document,
   CodeBlockLowlight.configure({
     lowlight,
     defaultLanguage: "javascript",
@@ -73,4 +80,40 @@ export const ExtensionKit = () => [
     openOnClick: false,
     autolink: true,
   }),
+  FileHandler.configure({
+    allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
+    onDrop: (currentEditor, files, pos) => {
+      files.forEach(async (file) => {
+        const result = await uploadImage(file);
+        const url = result?.url;
+        if (url) {
+          currentEditor
+            .chain()
+            .setImageBlockAt({ pos, src: url })
+            .focus()
+            .run();
+        }
+      });
+    },
+    onPaste: (currentEditor, files) => {
+      files.forEach(async (file) => {
+        const result = await uploadImage(file);
+        const url = result?.url;
+        if (url) {
+          return currentEditor
+            .chain()
+            .setImageBlockAt({
+              pos: currentEditor.state.selection.anchor,
+              src: url,
+            })
+            .focus()
+            .run();
+        } else {
+          alert("找不到图片地址，请稍后重试，谢谢配合");
+        }
+      });
+    },
+  }),
+  Focus,
+  TrailingNode,
 ];

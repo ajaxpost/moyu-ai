@@ -1,21 +1,15 @@
 "use server";
 import { auth } from "@/auth";
-import { DocumentVO, PermissionVO } from "@/shared";
+import {
+  DocumentVO,
+  PermissionVO,
+  POWER_OPTION,
+  ShareEntiry,
+  UserInfo,
+} from "@/shared";
 import { PermissionEnum } from "@/shared/enum";
 import { createClient } from "@/supabase/server";
 import { cookies } from "next/headers";
-
-// const cookieStore = await cookies();
-
-// export async function getStaticIds() {
-//   const supabase = createClient(cookieStore);
-//   const { data } = await supabase
-//     .from("document_v2")
-//     .select("*")
-//     .order("create_at", { ascending: true });
-
-//   return (data || []) as DocumentVO[];
-// }
 
 export async function getMenus() {
   const session = await auth();
@@ -33,6 +27,47 @@ export async function getMenus() {
     .eq("uid", session.user.id);
 
   return (data || []) as DocumentVO[];
+}
+
+export async function getShareMenus() {
+  const session = await auth();
+  if (!session?.user) return;
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data } = await supabase
+    .from("document_v2")
+    .select(
+      `*,permission (
+        permission
+      ),share(*)`
+    )
+    .order("create_at", { ascending: true })
+    .neq("uid", session.user.id);
+  const { data: users } = await supabase
+    .schema("next_auth")
+    .from("users")
+    .select<string, UserInfo>("*");
+
+  const newData: (DocumentVO & {
+    share?: (ShareEntiry & { userInfo?: UserInfo })[];
+  })[] = data || [];
+  const filter = newData
+    .filter((o) => o?.share?.length)
+    .map((item) => {
+      const currentShare = item?.share?.find((o) => o.uid === session.user.id);
+      delete item["share"];
+      return {
+        ...item,
+        currentShare: {
+          ...currentShare,
+          userInfo: users?.find((o) => o.id === currentShare?.uid),
+        },
+      };
+    });
+
+  return filter as (DocumentVO & {
+    currentShare: ShareEntiry & { userInfo?: UserInfo };
+  })[];
 }
 
 export async function createDoc(id: string, parent_id?: string) {
@@ -92,26 +127,43 @@ export async function getDoc(id: string) {
     )
     .eq("id", id)
     .eq("uid", session.user.id)
-    .single();
+    .single<DocumentVO>();
+
+  if (data) {
+    return data;
+  }
+
   const permission = await getPermission(id);
-  if (!data && permission && permission.permission !== PermissionEnum.PRIVATE) {
+  if (!data && permission) {
     const { data } = await supabase
       .from("document_v2")
       .select(
         `*,permission (
         permission
-      )`
+      ),share(*)`
       )
       .eq("id", permission.did)
-      .single();
-    return data;
+      .single<
+        DocumentVO & {
+          share?: ShareEntiry[];
+        }
+      >();
+
+    if (
+      data &&
+      (data.permission?.permission !== PermissionEnum.PRIVATE ||
+        data.share?.some(
+          (o) =>
+            o.uid === session.user.id &&
+            POWER_OPTION.some((i) => i.value === o.power)
+        ))
+    ) {
+      const currentShare = data?.share?.find((o) => o.uid === session.user.id);
+      delete data["share"];
+      data["currentShare"] = currentShare;
+      return data;
+    }
   }
-  return {
-    ...data,
-    permission: permission?.permission,
-  } as DocumentVO & {
-    permission: PermissionEnum;
-  };
 }
 
 export async function getPermission(id: string) {

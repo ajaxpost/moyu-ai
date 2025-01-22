@@ -31,6 +31,7 @@ import { useDocUpdatePermission } from "@/hooks/doc/use-doc-action";
 import { useParams } from "next/navigation";
 import { Skeleton } from "../ui/skeleton";
 import { PERMISSION_OPTION } from "@/shared";
+import Share from "./share/share";
 
 interface IProps {
   permission?: PermissionEnum;
@@ -78,7 +79,7 @@ export default function Header({
   };
 
   return (
-    <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1">
+    <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1 justify-between items-center mt-2">
       <div className="text-start inline-flex items-center">
         <Link href="/">
           <svg
@@ -109,7 +110,7 @@ export default function Header({
                   </div>
                 )}
                 {users.slice(0, 3).map((user: EditorUser) => (
-                  <div key={user.clientId} className="-ml-3">
+                  <div key={user.clientId} className="-ml-2 relative">
                     <TooltipProvider delayDuration={300}>
                       <Tooltip>
                         <TooltipTrigger asChild>
@@ -199,7 +200,8 @@ export default function Header({
           </TooltipV2>
         )}
       </div>
-      <div className="flex-1 text-end">
+      <div className="text-end flex gap-2">
+        <Share isAdmin={isAdmin} />
         <ModeToggle />
       </div>
     </header>

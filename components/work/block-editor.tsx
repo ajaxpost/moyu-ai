@@ -12,10 +12,10 @@ import { useStore } from "@/store/menu";
 import { DocumentVO, isHomeId } from "@/shared";
 import { isEmpty } from "lodash-es";
 import { Session } from "next-auth";
-import { PermissionEnum } from "@/shared/enum";
+import { PermissionEnum, PowerEnum } from "@/shared/enum";
 
 interface IProps {
-  doc: DocumentVO;
+  doc: DocumentVO | undefined | null;
   session: Session | null;
 }
 
@@ -35,6 +35,8 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
   const userId = activeItem?.uid ?? doc?.uid;
   const permission =
     activeItem?.permission?.permission ?? doc?.permission?.permission;
+  const sharePower =
+    activeItem?.currentShare?.power ?? doc?.currentShare?.power;
 
   const isAdmin = useMemo(
     () => userId === session?.user.id,
@@ -82,7 +84,10 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
   useEffect(() => {
     if (!userId || !id) return;
     let token: string = isAdmin ? userId : "readonly";
-    if (!isAdmin && permission === PermissionEnum.PUBLIC_RW) {
+    if (
+      !isAdmin &&
+      (permission === PermissionEnum.PUBLIC_RW || sharePower === PowerEnum.EDIT)
+    ) {
       token = userId;
     }
     const provider = new HocuspocusProvider({
@@ -134,7 +139,6 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
       // editor?.chain().focus().run();
     }
   };
-
   if (isEmpty(doc)) {
     return <>not found</>;
   }
@@ -152,20 +156,21 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
           <div className="mx-10 mb-6">
             <input
               ref={inputRef}
-              value={
-                activeItem?.title ??
-                // localStorage.getItem("doc_title") ??
-                doc?.title ??
-                ""
-              }
-              className="border-input placeholder:text-muted-foreground flex h-10 w-full rounded-md border border-none bg-background p-0 text-4xl font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+              value={activeItem?.title ?? doc?.title ?? ""}
+              className="border-input placeholder:text-muted-foreground flex h-10 w-full rounded-md border border-none bg-background p-0 text-4xl font-bold ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-transparent focus-visible:ring-offset-2 disabled:cursor-not-allowed"
               placeholder="请输入标题..."
               maxLength={100}
               onChange={handlerChange}
               onKeyDown={handlerKeyDown}
               readOnly={isReadonly}
+              disabled={!!activeItem?.currentShare}
             />
           </div>
+          {isReadonly && collabState === WebSocketStatus.Connected && (
+            <p className="mx-10 my-6 text-sm text-muted-foreground">
+              只读文档，你不能编辑
+            </p>
+          )}
           <Editor
             provider={provider}
             collabState={collabState}

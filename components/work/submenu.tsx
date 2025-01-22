@@ -8,6 +8,7 @@ import {
   use,
   Children,
   ReactNode,
+  useMemo,
 } from "react";
 import {
   ChevronRight,
@@ -33,8 +34,9 @@ interface IProps {
   title: string;
   level: number;
   actived: boolean;
-  uid: string;
-  permission: DocumentVO["permission"];
+  uid?: string;
+  permission?: DocumentVO["permission"];
+  badge?: ReactNode;
   onSelect: (key: string) => void;
 }
 
@@ -46,6 +48,7 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   actived,
   uid,
   permission,
+  badge,
   onSelect,
 }) => {
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
@@ -53,6 +56,8 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   const activeItem = useStore((state) => state.activeItem);
   const isNotFound = useStore((state) => state.isNotFound);
   const router = useRouter();
+
+  const usabled = useMemo(() => Boolean(uid), [uid]);
 
   // @ts-ignore
   const getDelIDs = (data: ReactNode) => {
@@ -75,29 +80,33 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
     onDelDoc(ids.concat(id));
   };
   const handlerAdd = async (e: MouseEvent<HTMLDivElement>) => {
-    e.stopPropagation();
-    setSelectedKeys((o) => [...o, id]);
-    onAddDoc(id);
+    if (uid) {
+      e.stopPropagation();
+      setSelectedKeys((o) => [...o, id]);
+      onAddDoc(id);
+    }
   };
 
   const handlerClick = () => {
-    const item = {
-      id,
-      title: title || "",
-      uid,
-      permission,
-    };
-    useStore.setState({
-      activeItem: item,
-    });
-    if (isNotFound || activeItem?.id === isHomeId) {
-      useStore.setState((o) => ({
-        ...o,
-        isNotFound: false,
-      }));
-      router.push(`/work/${id}`);
-    } else {
-      window.history.pushState(item, "", `/work/${id}`);
+    if (usabled) {
+      const item = {
+        id,
+        title: title || "",
+        uid,
+        permission,
+      };
+      useStore.setState({
+        activeItem: item,
+      });
+      if (isNotFound || activeItem?.id === isHomeId) {
+        useStore.setState((o) => ({
+          ...o,
+          isNotFound: false,
+        }));
+        router.push(`/work/${id}`);
+      } else {
+        window.history.pushState(item, "", `/work/${id}`);
+      }
     }
   };
 
@@ -130,32 +139,39 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
           onClick={handlerClick}
           className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
-          <span className="truncate flex-auto">{title || "<无标题>"}</span>
+          <span className="truncate flex-auto">
+            {badge}
+            {title || "<无标题>"}
+          </span>
         </div>
-        <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <div className="cursor-pointer rounded-full p-1 hover:bg-active">
-                <Ellipsis className="h-4 w-4" />
-              </div>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuItem
-                onClick={handlerDel}
-                className="text-destructive cursor-pointer"
-              >
-                <Trash2 className="h-4 w-4" />
-                删除
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-        <div
-          onClick={handlerAdd}
-          className="cursor-pointer rounded-full p-1 hover:bg-active invisible group-hover:visible"
-        >
-          <Plus className="h-4 w-4" />
-        </div>
+        {usabled && (
+          <>
+            <div className="inline-flex items-center invisible group-hover:visible ml-1 w-6 pr-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="cursor-pointer rounded-full p-1 hover:bg-active">
+                    <Ellipsis className="h-4 w-4" />
+                  </div>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem
+                    onClick={handlerDel}
+                    className="text-destructive cursor-pointer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                    删除
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div
+              onClick={handlerAdd}
+              className="cursor-pointer rounded-full p-1 hover:bg-active invisible group-hover:visible"
+            >
+              <Plus className="h-4 w-4" />
+            </div>
+          </>
+        )}
       </div>
 
       {actived && <div>{children}</div>}
