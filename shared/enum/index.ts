@@ -9,3 +9,9 @@ export enum PermissionEnum {
   PUBLIC = 1,
   PUBLIC_RW = 2,
 }
+
+// 文档权限「单个文档权限」
+export enum PowerEnum {
+  READ = "READ",
+  EDIT = "EDIT",
+}

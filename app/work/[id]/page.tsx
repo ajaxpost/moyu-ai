@@ -23,8 +23,6 @@ export default async function Page({
       </div>
     );
   }
-
   const doc = await getDoc(id);
-
-  return <BlockEditor doc={doc!} session={session} />;
+  return <BlockEditor doc={doc} session={session} />;
 }

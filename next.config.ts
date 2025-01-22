@@ -22,6 +22,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/avatar/**",
       },
+      {
+        protocol: "http",
+        hostname: "assert.moyu-web.cn",
+        port: "",
+        pathname: "/images/**",
+      },
     ],
   },
   experimental: {

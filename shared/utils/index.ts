@@ -1,6 +1,7 @@
 import { DocumentVO } from "../entity";
-import { cloneDeep } from "lodash-es";
+import { cloneDeep, isPlainObject, isUndefined } from "lodash-es";
 import { PermissionEnum } from "../enum";
+import { ShareListType } from "@/components/work/menu";
 
 export function getMenuTreeData(data: DocumentVO[]): DocumentVO[] {
   const cloneDate = cloneDeep(data);
@@ -150,4 +151,47 @@ export function findMenuItemParentKeys(
   };
 
   return findItem(data);
+}
+
+export function findShareMenuItemParentKeys(data: ShareListType, id: string) {
+  const find = data.find((o) => o.id === id);
+  if (find) {
+    return [find.uid];
+  }
+  return [];
+}
+
+export function copyToClipboard({
+  text,
+  onSuccess,
+  onFail,
+}: {
+  text: string;
+  onSuccess?: () => void;
+  onFail?: () => void;
+}) {
+  navigator.clipboard
+    .writeText(text)
+    .then(() => {
+      onSuccess?.();
+    })
+    .catch(() => {
+      onFail?.();
+    });
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function getUri(uri: string, params: Record<string, any>) {
+  const searchParams = new URLSearchParams();
+  for (const key in params) {
+    const n = params[key];
+    if (Array.isArray(n) && n.length) {
+      searchParams.set(key, n.join(","));
+    } else if (isPlainObject(n)) {
+      searchParams.set(key, JSON.stringify(n));
+    } else if (!isUndefined(n)) {
+      searchParams.set(key, n);
+    }
+  }
+  return `${uri}?${searchParams.toString()}`;
 }

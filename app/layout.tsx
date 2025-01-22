@@ -16,8 +16,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "摸鱼",
-  description: "摸鱼--一个在线的在线文档",
+  title: "摸鱼记📝",
+  description: "摸鱼记📝--一个在线的在线文档",
 };
 
 export const dynamic = "force-dynamic";

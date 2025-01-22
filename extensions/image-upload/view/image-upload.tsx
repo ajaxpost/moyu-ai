@@ -1,6 +1,6 @@
-import { Editor, NodeViewWrapper } from '@tiptap/react';
-import { useCallback } from 'react';
-import { ImageUploader } from './image-uploader';
+import { Editor, NodeViewWrapper } from "@tiptap/react";
+import { useCallback } from "react";
+import { ImageUploader } from "./image-uploader";
 
 export const ImageUpload = ({
   getPos,
@@ -17,6 +17,7 @@ export const ImageUpload = ({
           .setImageBlock({ src: url })
           .deleteRange({ from: getPos(), to: getPos() })
           .focus()
+          .insertContent({ type: "paragraph" })
           .run();
       }
     },

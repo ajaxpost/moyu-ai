@@ -1,4 +1,5 @@
 import { PermissionEnum } from "../enum";
+import { ShareEntiry } from "./share";
 
 export interface DocumentVO {
   id: string;
@@ -9,6 +10,7 @@ export interface DocumentVO {
   updated_at: string;
   permission: { permission: PermissionEnum };
   children?: DocumentVO[];
+  currentShare?: ShareEntiry;
 }
 
 export interface PermissionVO {

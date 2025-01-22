@@ -11,7 +11,7 @@ import clsx from "clsx";
 import { MenuContext } from "@/context";
 import { useParams, useRouter } from "next/navigation";
 import { useStore } from "@/store/menu";
-import { DocumentVO, isHomeId } from "@/shared";
+import { DocumentVO, isHomeId, ShareEntiry } from "@/shared";
 
 interface IProps {
   id: string;
@@ -19,9 +19,17 @@ interface IProps {
   level: number;
   uid: string;
   permission: DocumentVO["permission"];
+  currentShare?: ShareEntiry;
 }
 
-const MenuItem: FC<IProps> = ({ id, title, level, uid, permission }) => {
+const MenuItem: FC<IProps> = ({
+  id,
+  title,
+  level,
+  uid,
+  permission,
+  currentShare,
+}) => {
   const { id: _id } = useParams();
   const { setSelectedKeys, onDelDoc, onAddDoc } = use(MenuContext);
   const activeItem = useStore((state) => state.activeItem);
@@ -34,6 +42,7 @@ const MenuItem: FC<IProps> = ({ id, title, level, uid, permission }) => {
       title: title || "",
       uid,
       permission,
+      currentShare,
     };
     useStore.setState({
       activeItem: item,

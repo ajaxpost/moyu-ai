@@ -18,8 +18,11 @@ export { Color } from "@tiptap/extension-color";
 export { TextStyle } from "@tiptap/extension-text-style";
 export { Subscript } from "@tiptap/extension-subscript";
 export { Superscript } from "@tiptap/extension-superscript";
+export { FileHandler } from "@tiptap-pro/extension-file-handler";
+export { FocusClasses as Focus } from "@tiptap/extension-focus";
 
 export { ImageBlock } from "./image-block";
 export { ImageUpload } from "./image-upload";
 export { SlashCommand } from "./slash-command";
 export { Link } from "./link";
+export { TrailingNode } from "./trailing-node";
