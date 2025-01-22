@@ -23,7 +23,6 @@ import {
   FileHandler,
   Focus,
   TrailingNode,
-  Document,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
 import { uploadImage } from "@/actions/oss";
@@ -35,9 +34,7 @@ export const ExtensionKit = () => [
     codeBlock: false,
     horizontalRule: false,
     history: false,
-    document: false,
   }),
-  Document,
   CodeBlockLowlight.configure({
     lowlight,
     defaultLanguage: "javascript",
