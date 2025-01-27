@@ -20,9 +20,13 @@ export { Subscript } from "@tiptap/extension-subscript";
 export { Superscript } from "@tiptap/extension-superscript";
 export { FileHandler } from "@tiptap-pro/extension-file-handler";
 export { FocusClasses as Focus } from "@tiptap/extension-focus";
+export { UniqueID } from "@tiptap-pro/extension-unique-id";
+export { TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 
 export { ImageBlock } from "./image-block";
 export { ImageUpload } from "./image-upload";
 export { SlashCommand } from "./slash-command";
 export { Link } from "./link";
 export { TrailingNode } from "./trailing-node";
+export { Table, TableRow, TableCell, TableHeader } from "./table";
+export { HeadingAutoConvert } from "./heading-auto-convert";

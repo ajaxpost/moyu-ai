@@ -28,6 +28,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/images/**",
       },
+      {
+        protocol: "https",
+        hostname: "gitee.com",
+        port: "",
+        pathname: "/assets/**",
+      },
     ],
   },
   experimental: {

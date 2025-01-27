@@ -9,6 +9,7 @@ import {
 } from "@/shared";
 import { PermissionEnum } from "@/shared/enum";
 import { createClient } from "@/supabase/server";
+import { isEmpty } from "lodash-es";
 import { cookies } from "next/headers";
 
 export async function getMenus() {
@@ -36,37 +37,43 @@ export async function getShareMenus() {
   const supabase = createClient(cookieStore);
   const { data } = await supabase
     .from("document_v2")
-    .select(
+    .select<
+      string,
+      | (DocumentVO & {
+          share?: (ShareEntiry & { shareUserInfo?: UserInfo })[];
+        })
+      | undefined
+    >(
       `*,permission (
         permission
       ),share(*)`
     )
     .order("create_at", { ascending: true })
-    .neq("uid", session.user.id);
+    .neq("uid", session.user.id)
+    .eq("share.uid", session.user.id);
+
   const { data: users } = await supabase
     .schema("next_auth")
     .from("users")
     .select<string, UserInfo>("*");
 
-  const newData: (DocumentVO & {
-    share?: (ShareEntiry & { userInfo?: UserInfo })[];
-  })[] = data || [];
+  const newData = data || [];
   const filter = newData
     .filter((o) => o?.share?.length)
     .map((item) => {
       const currentShare = item?.share?.find((o) => o.uid === session.user.id);
-      delete item["share"];
+      delete item?.["share"];
       return {
         ...item,
         currentShare: {
           ...currentShare,
-          userInfo: users?.find((o) => o.id === currentShare?.uid),
+          shareUserInfo: users?.find((o) => o.id === currentShare?.sharer_uid),
         },
       };
     });
 
   return filter as (DocumentVO & {
-    currentShare: ShareEntiry & { userInfo?: UserInfo };
+    currentShare: ShareEntiry & { shareUserInfo?: UserInfo };
   })[];
 }
 
@@ -134,7 +141,7 @@ export async function getDoc(id: string) {
   }
 
   const permission = await getPermission(id);
-  if (!data && permission) {
+  if (!data && !isEmpty(permission)) {
     const { data } = await supabase
       .from("document_v2")
       .select(
