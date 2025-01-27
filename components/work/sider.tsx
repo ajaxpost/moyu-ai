@@ -4,7 +4,8 @@ import { Separator } from "../ui/separator";
 import Menu from "./menu";
 import { auth } from "@/auth";
 import { getMenus, getShareMenus } from "@/actions/menu";
-import Out from "./out";
+import Out from "./sider-nav/out";
+import HomeComponent from "./sider-nav/home";
 
 export default async function Sider() {
   const session = await auth();
@@ -24,7 +25,7 @@ export default async function Sider() {
           &nbsp;用户/设置
         </Button>
       </div>
-
+      <HomeComponent />
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />
       <Menu list={list || []} shareList={shareList || []} session={session} />
       <Separator className="shrink-0 bg-border h-[1px] w-full my-2" />

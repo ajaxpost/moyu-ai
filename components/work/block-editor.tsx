@@ -13,12 +13,15 @@ import { DocumentVO, isHomeId } from "@/shared";
 import { isEmpty } from "lodash-es";
 import { Session } from "next-auth";
 import { PermissionEnum, PowerEnum } from "@/shared/enum";
+import { LoadingPage } from "../loading";
+import Home from "./home";
+import NotFound from "./not-found";
 
 interface IProps {
   doc: DocumentVO | undefined | null;
   session: Session | null;
 }
-
+// 不使用 next router 进行跳转，因为会导致 page 重新渲染，这里我们采用 软链接
 const BlockEditor: FC<IProps> = ({ doc, session }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const [provider, setProvider] = useState<HocuspocusProvider | undefined>(
@@ -37,6 +40,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
     activeItem?.permission?.permission ?? doc?.permission?.permission;
   const sharePower =
     activeItem?.currentShare?.power ?? doc?.currentShare?.power;
+  const isNotFound = useStore((state) => state.isNotFound);
 
   const isAdmin = useMemo(
     () => userId === session?.user.id,
@@ -76,10 +80,6 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
       }
     );
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem("doc_title", activeItem?.title ?? doc?.title ?? "");
-  }, [activeItem?.title, doc?.title]);
 
   useEffect(() => {
     if (!userId || !id) return;
@@ -139,20 +139,29 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
       // editor?.chain().focus().run();
     }
   };
-  if (isEmpty(doc)) {
-    return <>not found</>;
+
+  if (!activeItem)
+    return <LoadingPage message="Please wait while we load your content..." />;
+
+  if (activeItem?.id === isHomeId) {
+    return <Home />;
+  }
+
+  if (isNotFound) {
+    return <NotFound />;
   }
 
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden">
       <Header permission={permission} isAdmin={isAdmin} />
       <div
-        className="flex overflow-auto"
+        className="flex overflow-auto relative z-10"
         style={{
           height: "calc(100vh - 50px)",
         }}
+        id="scroll-wrap"
       >
-        <div className="mx-auto mb-20 mt-8 w-[880px]">
+        <div className="mx-auto mb-20 mt-8 w-[880px]" id="editor-wrap">
           <div className="mx-10 mb-6">
             <input
               ref={inputRef}

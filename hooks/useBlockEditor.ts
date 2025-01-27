@@ -7,6 +7,8 @@ import { randomElement } from "@/lib/utils";
 import { userColors } from "@/shared";
 import { User } from "next-auth";
 import { uniqBy } from "lodash-es";
+import { useState } from "react";
+import { TableOfContentData } from "@tiptap-pro/extension-table-of-contents";
 
 export type EditorUser = {
   clientId: string;
@@ -25,10 +27,14 @@ export const useBlockEditor = ({
   user: User;
   isReadonly: boolean;
 }) => {
+  const [toc, $toc] = useState<TableOfContentData>([]);
+
   const editor = useEditor(
     {
       extensions: [
-        ...ExtensionKit(),
+        ...ExtensionKit({
+          setToc: $toc,
+        }),
         provider
           ? Collaboration.configure({
               document: provider.document,
@@ -100,5 +106,6 @@ export const useBlockEditor = ({
     users,
     characters,
     words,
+    toc,
   };
 };

@@ -1,0 +1,11 @@
+.is-active {
+  @apply border-foreground;
+  a{
+    font-weight: 700;
+    color: hsl(var(--foreground)) !important;
+  }
+}
+
+.is-scrolled-over a {
+  color:rgba(28, 25, 23, .6);
+}

@@ -3,6 +3,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SessionProvider } from "next-auth/react";
 import { Toaster } from "@/components/ui/toaster";
+import NavigationEvents from "@/components/navigation-events";
+import localFont from "next/font/local";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,6 +15,11 @@ const geistSans = Geist({
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+});
+
+const pmzdcst = localFont({
+  src: "../public/font/PangMenZhengDaoCuShuTi-2.ttf",
+  variable: "--font-custom-pmzdcst",
 });
 
 export const metadata: Metadata = {
@@ -30,7 +37,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pmzdcst.variable} antialiased`}
       >
         <ThemeProvider
           attribute="class"
@@ -41,6 +48,7 @@ export default function RootLayout({
           <SessionProvider>
             {children}
             <Toaster />
+            <NavigationEvents />
           </SessionProvider>
         </ThemeProvider>
       </body>

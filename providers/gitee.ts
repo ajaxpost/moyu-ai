@@ -36,8 +36,7 @@ export default function Gitee(config: any): any {
           });
           if (res.ok) {
             const emails: any[] = await res.json();
-
-            profile.email = (emails.find((e) => e.primary) ?? emails[0]).email;
+            profile.email = (emails.find((e) => e.primary) ?? emails[0])?.email;
           }
         }
         return profile;
@@ -47,7 +46,7 @@ export default function Gitee(config: any): any {
       return {
         id: profile.id.toString(),
         name: profile.name ?? profile.login,
-        email: profile.email,
+        email: profile?.email,
         image: profile.avatar_url,
       };
     },

@@ -81,20 +81,8 @@ export default function Header({
   return (
     <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1 justify-between items-center mt-2">
       <div className="text-start inline-flex items-center">
-        <Link href="/">
-          <svg
-            className="h-8 w-8 text-blue-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M13 10V3L4 14h7v7l9-11h-7z"
-            />
-          </svg>
+        <Link href="/" target="_parent" prefetch scroll={false}>
+          <Image src="/icon.png" width={38} height={40} alt="logo" />
         </Link>
         {!users.length && collabState === WebSocketStatus.Connecting ? (
           <Skeleton className="w-[100px] h-[24px] rounded-full ml-5" />
