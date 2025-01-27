@@ -10,8 +10,10 @@ import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu
 import { Skeleton } from "../ui/skeleton";
 import { isSave } from "@/shared/hotkey";
 import TextMenu from "./menus/text-menu";
-import "./editor.css";
+import "./editor.scss";
 import LinkMenu from "./menus/link-menu";
+import { TableColumnMenu, TableRowMenu } from "@/extensions/table/menus";
+import SidePanel from "./side-panel";
 
 interface IProps {
   provider?: HocuspocusProvider;
@@ -27,7 +29,7 @@ export default function Editor({
   isReadonly,
 }: IProps) {
   const menuContainerRef = useRef(null);
-  const { editor, users, characters } = useBlockEditor({
+  const { editor, users, characters, toc } = useBlockEditor({
     provider,
     user: session?.user || {
       name: "anonymous",
@@ -52,6 +54,26 @@ export default function Editor({
     if (isSave(e)) {
       e.preventDefault();
     }
+    if (e.key === "Tab") {
+      // 检查当前节点是否为列表项
+      const isList =
+        editor?.isActive("bulletList") ||
+        editor?.isActive("orderedList") ||
+        editor?.isActive("taskList");
+
+      if (!isList) {
+        e.preventDefault();
+        if (editor) {
+          editor.commands.insertContent("\t");
+        }
+      } else {
+        // 在列表中，需要阻止默认行为并手动处理缩进
+        e.preventDefault();
+        if (editor && !e.shiftKey) {
+          editor.commands.sinkListItem("listItem");
+        }
+      }
+    }
   };
 
   return collabState !== WebSocketStatus.Connected || !provider || !editor ? (
@@ -61,15 +83,22 @@ export default function Editor({
       <Skeleton className="w-1/2 h-[20px] rounded-md mb-2 mx-10" />
     </>
   ) : (
-    <div ref={menuContainerRef}>
+    <div
+      ref={menuContainerRef}
+      className="mr-[var(--viewer-center-align-right)]"
+    >
       <LinkMenu editor={editor} appendTo={menuContainerRef} />
       <TextMenu editor={editor} />
       <ImageBlockMenu editor={editor} />
+      <TableRowMenu editor={editor} appendTo={menuContainerRef} />
+      <TableColumnMenu editor={editor} appendTo={menuContainerRef} />
       <EditorContent
         editor={editor}
         onKeyDown={onKeyDown}
         className="focus:outline-none"
       />
+      {/* sidePanel */}
+      <SidePanel editor={editor} toc={toc} />
     </div>
   );
 }

@@ -17,19 +17,22 @@ export default async function Context() {
         <div className="flex flex-col items-center space-y-4 text-center">
           <div className="space-y-4">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-              MOYU,智能写作 高效工作
+              MOYU - 让创作更简单，让协作更高效
             </h1>
             <p className="mx-auto max-w-[700px] text-gray-500 md:text-xl dark:text-gray-400">
               <span>
-                🐈 基于 GPT 模型，AI 智能写作，AI
-                文本处理，分享文档，多人协同编辑
+                📝 专业的在线文档协作平台，支持多人实时编辑，让创作与协作更高效
               </span>
             </p>
           </div>
           <div className="flex justify-center space-x-4">
             <Link
-              href={session?.user ? "/work/0" : "/api/auth/signin?callbackUrl="}
+              href={
+                session?.user ? "/work/0" : "/api/auth/signin?callbackUrl=/"
+              }
               target="_parent"
+              prefetch
+              scroll={false}
             >
               <Button className="h-11 rounded-md px-8 text-base">
                 <Zap />

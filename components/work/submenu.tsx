@@ -24,7 +24,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MenuContext } from "@/context";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useStore } from "@/store/menu";
 import clsx from "clsx";
 import { DocumentVO, isHomeId } from "@/shared";
@@ -55,7 +55,6 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
   const { id: _id } = useParams();
   const activeItem = useStore((state) => state.activeItem);
   const isNotFound = useStore((state) => state.isNotFound);
-  const router = useRouter();
 
   const usabled = useMemo(() => Boolean(uid), [uid]);
 
@@ -103,10 +102,8 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
           ...o,
           isNotFound: false,
         }));
-        router.push(`/work/${id}`);
-      } else {
-        window.history.pushState(item, "", `/work/${id}`);
       }
+      window.history.pushState(item, "", `/work/${id}`);
     }
   };
 

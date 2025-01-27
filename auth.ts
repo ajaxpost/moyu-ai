@@ -5,8 +5,9 @@ import Gitee from "./providers/gitee";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
-    // signIn: "/",
+    signIn: "/sign-in",
     signOut: "/",
+    // newUser: "/auth/new-user",
   },
   providers: [
     GitHub({

@@ -96,6 +96,20 @@ export const GROUPS: Group[] = [
     title: "插入",
     commands: [
       {
+        name: "table",
+        label: "Table 表格",
+        iconName: "Table",
+        description: "插入表格",
+        shouldBeHidden: (editor) => editor.isActive("columns"),
+        action: (editor) => {
+          editor
+            .chain()
+            .focus()
+            .insertTable({ rows: 3, cols: 3, withHeaderRow: false })
+            .run();
+        },
+      },
+      {
         name: "Image",
         label: "Image 图片",
         iconName: "Image",

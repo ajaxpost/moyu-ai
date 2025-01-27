@@ -23,17 +23,35 @@ import {
   FileHandler,
   Focus,
   TrailingNode,
+  Table,
+  TableRow,
+  TableHeader,
+  TableCell,
+  UniqueID,
+  TableOfContents,
+  Heading,
+  HeadingAutoConvert,
 } from ".";
 import CodeBlockComponent from "./code-block-component";
 import { uploadImage } from "@/actions/oss";
+import { isChangeOrigin } from "@tiptap/extension-collaboration";
+import {
+  getHierarchicalIndexes,
+  TableOfContentData,
+} from "@tiptap-pro/extension-table-of-contents";
 
 const lowlight = createLowlight(all);
 
-export const ExtensionKit = () => [
+interface IProps {
+  setToc: (toc: TableOfContentData) => void;
+}
+
+export const ExtensionKit = ({ setToc }: IProps) => [
   StarterKit.configure({
     codeBlock: false,
     horizontalRule: false,
     history: false,
+    heading: false,
   }),
   CodeBlockLowlight.configure({
     lowlight,
@@ -113,4 +131,23 @@ export const ExtensionKit = () => [
   }),
   Focus,
   TrailingNode,
+  Table,
+  TableRow,
+  TableHeader,
+  TableCell,
+  UniqueID.configure({
+    types: ["paragraph", "heading", "blockquote", "codeBlock", "table"],
+    filterTransaction: (transaction) => !isChangeOrigin(transaction),
+  }),
+  TableOfContents.configure({
+    getIndex: getHierarchicalIndexes,
+    onUpdate(content) {
+      setToc(content);
+    },
+    scrollParent: () => {
+      return document.getElementById("scroll-wrap")! || window;
+    },
+  }),
+  Heading,
+  HeadingAutoConvert,
 ];

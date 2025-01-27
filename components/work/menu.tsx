@@ -23,7 +23,7 @@ import {
 import { getMenus } from "@/actions/menu";
 import { Button } from "../ui/button";
 import { MenuContext } from "@/context";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import { useStore } from "@/store/menu";
 import { nanoid } from "nanoid";
@@ -35,7 +35,7 @@ import { Badge } from "@/components/ui/badge";
 
 export type ShareListType = (DocumentVO & {
   currentShare: ShareEntiry & {
-    userInfo?: UserInfo;
+    shareUserInfo?: UserInfo;
   };
 })[];
 
@@ -47,7 +47,6 @@ interface IProps {
 
 const Menu: FC<IProps> = ({ list, shareList, session }) => {
   const { id } = useParams();
-  const router = useRouter();
   const [open, setOpen] = useState<boolean>(true);
   const [shareOpen, setShareOpen] = useState<boolean>(true);
   const timeOut = useRef<NodeJS.Timeout | null>(null);
@@ -97,8 +96,12 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
         callback();
       }, 500);
     });
+    emitter.on(EventEnum.ADD_DOC, () => {
+      handlerAddMenuItem();
+    });
     return () => {
       emitter.removeListener(EventEnum.MENU_UPDATE_TITLE);
+      emitter.removeListener(EventEnum.ADD_DOC);
     };
   }, [id, menus]);
 
@@ -149,7 +152,7 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
   const renderShareMenu = (data: Record<string, ShareListType>) => {
     return map(data, (value, key) => {
       if (value.length) {
-        const userInfo = value[0].currentShare?.userInfo;
+        const userInfo = value[0].currentShare?.shareUserInfo;
         return (
           <SubMenu
             key={key}
@@ -196,7 +199,7 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
     useStore.setState({
       activeItem: item,
     });
-    router.push("/work/0");
+    window.history.pushState({}, "", `/work/0`);
     await delTrigger({ ids });
   };
 
@@ -212,15 +215,11 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
     };
     useStore.setState({
       activeItem: item,
+      isNotFound: false,
     });
     setMenus(addMenuItem(menus, id, pid, session?.user.id));
-    if (isHome) {
-      await trigger({ id, pid });
-      router.push(`/work/${id}`);
-    } else {
-      window.history.pushState(item, "", `/work/${id}`);
-      await trigger({ id, pid });
-    }
+    window.history.pushState(item, "", `/work/${id}`);
+    await trigger({ id, pid });
   };
 
   return (
