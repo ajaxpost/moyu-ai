@@ -10,14 +10,13 @@ export const ImageUpload = ({
   editor: Editor;
 }) => {
   const onUpload = useCallback(
-    (url: string) => {
+    (url: string, loading: boolean) => {
       if (url) {
         editor
           .chain()
-          .setImageBlock({ src: url })
-          .deleteRange({ from: getPos(), to: getPos() })
           .focus()
-          .insertContent({ type: "paragraph" })
+          .deleteRange({ from: getPos(), to: getPos() })
+          .setImageBlock({ src: url, loading })
           .run();
       }
     },

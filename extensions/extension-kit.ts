@@ -99,29 +99,56 @@ export const ExtensionKit = ({ setToc }: IProps) => [
     allowedMimeTypes: ["image/png", "image/jpeg", "image/gif", "image/webp"],
     onDrop: (currentEditor, files, pos) => {
       files.forEach(async (file) => {
+        const blob = new Blob([file]);
+        const temporaryUrl = URL.createObjectURL(blob);
+        setTimeout(() => {
+          currentEditor
+            .chain()
+            .focus()
+            .deleteRange({ from: pos, to: pos })
+            .setImageBlock({ src: temporaryUrl, loading: true })
+            .run();
+        }, 0);
+
         const result = await uploadImage(file);
         const url = result?.url;
         if (url) {
           currentEditor
             .chain()
-            .setImageBlockAt({ pos, src: url })
             .focus()
+            .deleteRange({ from: pos, to: pos })
+            .setImageBlock({ src: url, loading: false })
             .run();
         }
       });
     },
     onPaste: (currentEditor, files) => {
       files.forEach(async (file) => {
+        const blob = new Blob([file]);
+        const temporaryUrl = URL.createObjectURL(blob);
+        const { $anchor, $from } = currentEditor.state.selection;
+        setTimeout(() => {
+          currentEditor
+            .chain()
+            .focus()
+            .deleteRange({ from: $from.pos, to: $anchor.pos })
+            .setImageBlock({
+              src: temporaryUrl,
+              loading: true,
+            })
+            .run();
+        }, 0);
         const result = await uploadImage(file);
         const url = result?.url;
         if (url) {
           return currentEditor
             .chain()
-            .setImageBlockAt({
-              pos: currentEditor.state.selection.anchor,
-              src: url,
-            })
             .focus()
+            .deleteRange({ from: $from.pos, to: $anchor.pos })
+            .setImageBlock({
+              src: url,
+              loading: false,
+            })
             .run();
         } else {
           alert("找不到图片地址，请稍后重试，谢谢配合");

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 export const ImageUploader = ({
   onUpload,
 }: {
-  onUpload: (url: string) => void;
+  onUpload: (url: string, loading: boolean) => void;
 }) => {
   const { loading, uploadFile } = useUploader({ onUpload });
   const { handleUploadClick, ref } = useFileUpload();
