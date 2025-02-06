@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+import { Spinner } from "@/components/ui/spiner";
 import { cn } from "@/lib/utils";
 import { Node } from "@tiptap/pm/model";
 import { Editor, NodeViewWrapper } from "@tiptap/react";
@@ -15,11 +17,12 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
     node: Node & {
       attrs: {
         src: string;
+        loading: boolean;
       };
     };
   };
   const imageWrapperRef = useRef<HTMLDivElement>(null);
-  const { src } = node.attrs;
+  const { src, loading } = node.attrs;
 
   const wrapperClassName = cn(
     node.attrs.align === "left" ? "ml-0" : "ml-auto",
@@ -33,10 +36,25 @@ export const ImageBlockView = (props: ImageBlockViewProps) => {
 
   return (
     <NodeViewWrapper>
-      <div className={wrapperClassName} style={{ width: node.attrs.width }}>
+      <div
+        className={`${wrapperClassName} relative`}
+        style={{ width: node.attrs.width }}
+      >
         <div contentEditable={false} ref={imageWrapperRef}>
-          <img className="block" src={src} alt="" onClick={onClick} />
+          <img
+            className={cn("block", {
+              "opacity-[0.2]": loading,
+            })}
+            src={src}
+            alt=""
+            onClick={onClick}
+          />
         </div>
+        {loading && (
+          <div className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Spinner className="text-neutral-500" size={1.5} />
+          </div>
+        )}
       </div>
     </NodeViewWrapper>
   );
