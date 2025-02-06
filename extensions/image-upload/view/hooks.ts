@@ -5,20 +5,22 @@ import toast from "react-hot-toast";
 export const useUploader = ({
   onUpload,
 }: {
-  onUpload: (url: string) => void;
+  onUpload: (url: string, loading: boolean) => void;
 }) => {
   const [loading, setLoading] = useState(false);
 
   const uploadFile = useCallback(
     async (file: File) => {
       setLoading(true);
-      console.log(file);
       try {
+        const blob = new Blob([file]);
+        const temporaryUrl = URL.createObjectURL(blob);
+        onUpload(temporaryUrl, true);
         const result = await uploadImage(file);
         // const url = "https://avatars.githubusercontent.com/u/74407992?v=4";
         const url = result?.url;
         if (url) {
-          onUpload(url);
+          onUpload(url, false);
         } else {
           alert("找不到图片地址，请稍后重试，谢谢配合");
         }

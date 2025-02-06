@@ -91,10 +91,13 @@ export async function createDoc(id: string, parent_id?: string) {
       parent_id,
     })
     .select();
-  await supabase.from("permission").insert({
-    did: id,
-    permission: PermissionEnum.PRIVATE,
-  });
+  await supabase
+    .from("permission")
+    .insert({
+      did: id,
+      permission: PermissionEnum.PRIVATE,
+    })
+    .select();
 
   return data;
 }
@@ -105,6 +108,7 @@ export async function delDoc(ids: string[]) {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
   await supabase.from("permission").delete().in("did", ids);
+  await supabase.from("share").delete().in("did", ids);
   const data = await supabase.from("document_v2").delete().in("id", ids);
   return data;
 }
@@ -141,6 +145,7 @@ export async function getDoc(id: string) {
   }
 
   const permission = await getPermission(id);
+
   if (!data && !isEmpty(permission)) {
     const { data } = await supabase
       .from("document_v2")
