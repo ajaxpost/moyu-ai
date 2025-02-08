@@ -9,6 +9,7 @@ import { emitter, EventEnum } from "@/shared/utils/event";
 import { updateTitle } from "@/actions/menu";
 import { isEnter } from "@/shared/hotkey";
 import { useStore } from "@/store/menu";
+import { useStore as useEditorStore } from "@/store/editor";
 import { DocumentVO, isHomeId } from "@/shared";
 import { isEmpty } from "lodash-es";
 import { Session } from "next-auth";
@@ -16,6 +17,7 @@ import { PermissionEnum, PowerEnum } from "@/shared/enum";
 import { LoadingPage } from "../loading";
 import Home from "./home";
 import NotFound from "./not-found";
+import EditorFooter from "./editor-footer";
 
 interface IProps {
   doc: DocumentVO | undefined | null;
@@ -31,6 +33,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
     provider ? WebSocketStatus.Connecting : WebSocketStatus.Disconnected
   );
   const [isReadonly, setIsReadonly] = useState(true);
+  const [footerShow, setFooterShow] = useState(false);
   const activeItem = useStore((state) => state.activeItem);
 
   const id = activeItem?.id === isHomeId ? undefined : activeItem?.id;
@@ -41,6 +44,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
   const sharePower =
     activeItem?.currentShare?.power ?? doc?.currentShare?.power;
   const isNotFound = useStore((state) => state.isNotFound);
+  const characters = useEditorStore.use.characters();
 
   const isAdmin = useMemo(
     () => userId === session?.user.id,
@@ -79,6 +83,15 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
         signal: controller.signal,
       }
     );
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setFooterShow(true);
+    }, 200);
+    return () => {
+      clearTimeout(timer);
+    };
   }, []);
 
   useEffect(() => {
@@ -187,6 +200,9 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
             isReadonly={isReadonly}
           />
         </div>
+        {footerShow &&
+          collabState === WebSocketStatus.Connected &&
+          characters === 0 && <EditorFooter />}
       </div>
     </div>
   );

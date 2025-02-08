@@ -56,7 +56,11 @@ const MenuItem: FC<IProps> = ({
       // router.push(`/work/${_id}`);
       // window.history.pushState(item, "", `/work/${_id}`);
     }
-    window.history.pushState(item, "", `/work/${_id}`);
+    window.history.pushState(
+      JSON.parse(JSON.stringify(item)),
+      "",
+      `/work/${_id}`
+    );
   };
 
   const handlerDel = (e: MouseEvent<HTMLDivElement>) => {

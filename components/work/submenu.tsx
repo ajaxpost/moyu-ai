@@ -103,7 +103,11 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
           isNotFound: false,
         }));
       }
-      window.history.pushState(item, "", `/work/${id}`);
+      window.history.pushState(
+        JSON.parse(JSON.stringify(item)),
+        "",
+        `/work/${id}`
+      );
     }
   };
 
