@@ -1,5 +1,5 @@
 import React from "react";
-import { Plus, FileText, Clock, Star } from "lucide-react";
+import { Plus, Star } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { emitter, EventEnum } from "@/shared/utils/event";
@@ -27,7 +27,7 @@ export default function Home() {
             description="创建一个空白文档"
             onClick={handlerAddDoc}
           />
-          <QuickAction
+          {/* <QuickAction
             icon={<FileText className="w-5 h-5" />}
             title="模版中心"
             description="从模版中获取灵感"
@@ -41,7 +41,7 @@ export default function Home() {
             icon={<Star className="w-5 h-5" />}
             title="收藏文档"
             description="查看已收藏文档"
-          />
+          /> */}
         </div>
 
         {/* 最近文档列表 */}
