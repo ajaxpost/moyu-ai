@@ -10,10 +10,12 @@ import ImageBlockMenu from "@/extensions/image-block/components/image-block-menu
 import { Skeleton } from "../ui/skeleton";
 import { isSave } from "@/shared/hotkey";
 import TextMenu from "./menus/text-menu";
-import "./editor.scss";
 import LinkMenu from "./menus/link-menu";
 import { TableColumnMenu, TableRowMenu } from "@/extensions/table/menus";
 import SidePanel from "./side-panel";
+import { emitter, EventEnum } from "@/shared/utils/event";
+import "./editor.scss";
+import { EDITOR_TEMPLATE } from "@/shared";
 
 interface IProps {
   provider?: HocuspocusProvider;
@@ -39,6 +41,19 @@ export default function Editor({
     },
     isReadonly,
   });
+
+  useEffect(() => {
+    if (!editor) return;
+    emitter.on(EventEnum.EDITOR_TEMPLATE, (payload) => {
+      const type = payload.type;
+      const content = EDITOR_TEMPLATE[type];
+      editor.commands.insertContent(content);
+    });
+
+    return () => {
+      emitter.off(EventEnum.EDITOR_TEMPLATE);
+    };
+  }, [editor]);
 
   useEffect(() => {
     if (users?.length) {
@@ -85,7 +100,7 @@ export default function Editor({
   ) : (
     <div
       ref={menuContainerRef}
-      className="mr-[var(--viewer-center-align-right)]"
+      className="mr-[var(--viewer-center-align-right)] relative"
     >
       <LinkMenu editor={editor} appendTo={menuContainerRef} />
       <TextMenu editor={editor} />

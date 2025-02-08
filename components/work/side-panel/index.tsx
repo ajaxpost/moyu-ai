@@ -14,8 +14,8 @@ interface IProps {
 }
 
 const SidePanel: FC<IProps> = ({ toc, editor }) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isHoverVisible, setIsHoverVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isHoverVisible, setIsHoverVisible] = useState(false);
 
   useLayoutEffect(() => {
     const controller = new AbortController();
