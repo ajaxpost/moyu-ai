@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import GitHub from "next-auth/providers/github";
 import Gitee from "./providers/gitee";
+import Email from "./providers/email";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   pages: {
@@ -18,6 +19,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.GITEE_CLIENT_ID,
       clientSecret: process.env.GITEE_CLIENT_SECRET,
     }),
+    Email(),
   ],
   trustHost: true,
   adapter: SupabaseAdapter({
@@ -25,24 +27,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
   }),
   debug: true,
-  // callbacks: {
-  //   async session({
-  //     session,
-  //     // user
-  //   }) {
-  //     // const signingSecret = process.env.SUPABASE_JWT_SECRET;
-  //     // if (signingSecret) {
-  //     //   const payload = {
-  //     //     aud: "authenticated",
-  //     //     exp: Math.floor(new Date(session.expires).getTime() / 1000),
-  //     //     sub: user.id,
-  //     //     email: user.email,
-  //     //     role: "authenticated",
-  //     //   };
-  //     //   session.supabaseAccessToken = jwt.sign(payload, signingSecret);
-  //     // }
-  //     // session.userId = user.id ;
-  //     return session;
-  //   },
-  // },
+  callbacks: {
+    async session({
+      session,
+      // user
+    }) {
+      if (!session.user.image) {
+        session.user.image = "https://gitee.com/assets/no_portrait.png";
+      }
+
+      // const signingSecret = process.env.SUPABASE_JWT_SECRET;
+      // if (signingSecret) {
+      //   const payload = {
+      //     aud: "authenticated",
+      //     exp: Math.floor(new Date(session.expires).getTime() / 1000),
+      //     sub: user.id,
+      //     email: user.email,
+      //     role: "authenticated",
+      //   };
+      //   session.supabaseAccessToken = jwt.sign(payload, signingSecret);
+      // }
+      // session.userId = user.id ;
+      return session;
+    },
+  },
 });

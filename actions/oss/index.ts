@@ -14,11 +14,20 @@ export const uploadImage = async (file: File) => {
     const blob = new Blob([file]);
     const arrayBuffer = await blob.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const result = await client.put(
-      `images/${Date.now()}__${file.name}`,
-      buffer
-    );
+    const result = await client.put(`images/${file.name}`, buffer);
     console.log(`上传成功 「${file.name}」 `, result);
+    return result;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const uploadImageByBlob = async (blob: Blob) => {
+  try {
+    const arrayBuffer = await blob.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const result = await client.put(`images/${Date.now()}`, buffer);
+    console.log(`上传成功 `, result);
     return result;
   } catch (error) {
     console.log(error);

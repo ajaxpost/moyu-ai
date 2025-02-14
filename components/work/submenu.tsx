@@ -140,6 +140,7 @@ const SubMenu: FC<PropsWithChildren<IProps>> = ({
           onClick={handlerClick}
           className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center"
         >
+          {/* <File size={16} className="mr-1" /> */}
           <span className="truncate flex-auto">
             {badge}
             {title || "<无标题>"}

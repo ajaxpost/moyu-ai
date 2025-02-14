@@ -34,6 +34,12 @@ const nextConfig: NextConfig = {
         port: "",
         pathname: "/assets/**",
       },
+      {
+        protocol: "http",
+        hostname: "moyu-assert.oss-cn-beijing.aliyuncs.com",
+        port: "",
+        pathname: "/images/**",
+      },
     ],
   },
   experimental: {
