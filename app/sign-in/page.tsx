@@ -1,15 +1,26 @@
 "use client";
 
-import { useState } from "react";
-import { signIn } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import GihubIcon from "@/assert/svg/github-mark-white.svg";
 import GiteeIcon from "@/assert/svg/gitee-logo-white.svg";
+import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getUri } from "@/shared";
 
 export default function SignInPage() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [showEmailInput, setShowEmailInput] = useState(false);
+  const session = useSession();
+
+  useEffect(() => {
+    if (session.data?.user) {
+      router.push("/");
+    }
+  }, [session, router]);
 
   const handleOAuthSignIn = async (provider: "github" | "gitee") => {
     try {
@@ -28,13 +39,23 @@ export default function SignInPage() {
     e.preventDefault();
     try {
       setIsLoading(true);
-      await signIn("email", {
+      const data = await signIn("email", {
         email,
+        redirect: false,
         callbackUrl: "/",
       });
+      if (data?.ok) {
+        router.push(
+          getUri("/check-email", {
+            email,
+          })
+        );
+      } else {
+        alert("出现了错误，请稍后再试");
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error("邮箱登录失败:", error);
-    } finally {
       setIsLoading(false);
     }
   };
@@ -102,9 +123,7 @@ export default function SignInPage() {
                   d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                 />
               </svg>
-              <span>
-                <s>使用邮箱继续「暂未开放」</s>
-              </span>
+              <span>使用邮箱继续</span>
             </button>
           </>
         ) : (
@@ -122,8 +141,11 @@ export default function SignInPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="w-full rounded-lg bg-gradient-to-r from-blue-500 to-violet-500 px-4 py-2.5 text-sm font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50 flex items-center justify-center"
             >
+              {isLoading && (
+                <LoaderCircle className="animate-spin mr-1" size={18} />
+              )}
               继续
             </button>
             <button

@@ -45,10 +45,11 @@ export const useDocDel = () => {
         if (data.code === 200) {
           toast({
             title: "删除成功",
-            duration: 2500,
-            description: dayjs()
-              .locale("zh-cn")
-              .format("dddd, MMMM D, YYYY at h:mm A"),
+            duration: 1500,
+            // description: dayjs()
+            //   .locale("zh-cn")
+            //   .format("dddd, MMMM D, YYYY at h:mm A"),
+            description: `删除成功，放在回收站`,
           });
         }
       },

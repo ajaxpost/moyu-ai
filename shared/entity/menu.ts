@@ -11,6 +11,8 @@ export interface DocumentVO {
   permission: { permission: PermissionEnum };
   children?: DocumentVO[];
   currentShare?: ShareEntiry;
+  is_del: boolean;
+  del_at: string;
 }
 
 export interface PermissionVO {

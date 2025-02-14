@@ -55,7 +55,10 @@ export const ToCItem: FC<TocItemProps> = ({ item, onItemClick, isVisible }) => {
           href={`#${item.id}`}
           onClick={(e) => onItemClick(e, item.id)}
           data-item-index={item.itemIndex}
-          className={`${isVisible ? "block" : "hidden"}`}
+          title={item.textContent}
+          className={`${
+            isVisible ? "block" : "hidden"
+          } whitespace-nowrap overflow-hidden text-ellipsis`}
         >
           {item.textContent}
         </a>
