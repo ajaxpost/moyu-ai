@@ -71,20 +71,22 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
   useLayoutEffect(() => {
     if (!id) return;
     const item = findMenuItem(menus, String(id));
+    const currentShareItem = shareList.find((o) => o.id === id);
     useStore.setState({
       activeItem: isHome
         ? {
             id: isHomeId,
           }
-        : item ?? {
+        : item ??
+          currentShareItem ?? {
             id: id as string,
           },
     });
   }, []);
 
-  useEffect(() => {
-    setMenus(getMenuTreeData(list));
-  }, [list]);
+  // useEffect(() => {
+  //   setMenus(getMenuTreeData(list));
+  // }, [list]);
 
   useEffect(() => {
     emitter.on(EventEnum.MENU_UPDATE_TITLE, ({ title, id, callback }) => {
@@ -259,11 +261,11 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
         ) : null}
         <div className="mb-2">
           <div className="flex justify-between items-center">
-            <h3 className="px-1 mt-1 mb-1 text-sm font-bold flex items-center cursor-pointer">
-              <div
-                className="hover:bg-active rounded-full p-0.5"
-                onClick={() => setOpen(!open)}
-              >
+            <h3
+              onClick={() => setOpen(!open)}
+              className="px-1 mt-1 mb-1 text-sm font-bold flex items-center cursor-pointer"
+            >
+              <div className="hover:bg-active rounded-full p-0.5">
                 {open ? (
                   <ChevronDown className="h-4 w-4" />
                 ) : (
@@ -273,6 +275,7 @@ const Menu: FC<IProps> = ({ list, shareList, session }) => {
               <span>我的文档</span>
             </h3>
           </div>
+
           {open && renderMenu(menus)}
         </div>
 

@@ -17,9 +17,9 @@ import { Button } from "@/components/ui/button";
 import { signOut } from "next-auth/react";
 
 const Out: FC = () => {
-  const handlerOut = () => {
-    window.location.reload();
-    signOut();
+  const handlerOut = async () => {
+    await signOut();
+    window.open(`${window.origin}/`, "_self");
   };
 
   return (

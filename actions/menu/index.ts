@@ -11,6 +11,7 @@ import { PermissionEnum } from "@/shared/enum";
 import { createClient } from "@/supabase/server";
 import { isEmpty } from "lodash-es";
 import { cookies } from "next/headers";
+import dayjs from "dayjs";
 
 export async function getMenus() {
   const session = await auth();
@@ -25,9 +26,53 @@ export async function getMenus() {
       )`
     )
     .order("create_at", { ascending: true })
-    .eq("uid", session.user.id);
+    .eq("uid", session.user.id)
+    .eq("is_del", false);
 
   return (data || []) as DocumentVO[];
+}
+
+/** 回收站 **/
+export async function getRecycleBinMenus() {
+  const session = await auth();
+  if (!session?.user) return [];
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  // 计算 30 天前的日期（ISO 格式）
+  const thirtyDaysAgo = new Date();
+  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+  const isoDate = thirtyDaysAgo.toISOString();
+
+  const { data, error } = await supabase
+    .from("document_v2")
+    .select("*")
+    .eq("uid", session.user.id)
+    .eq("is_del", true)
+    .gt("del_at", isoDate);
+  // gt => del_at > isoDate
+  // lt => del_at < isoDate
+  if (!error) return data as DocumentVO[];
+  return [];
+}
+
+/** 恢复 **/
+export async function RestoreDoc(ids: string[]) {
+  const session = await auth();
+  if (!session?.user) return;
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  await supabase
+    .from("share")
+    .update({
+      is_del: false,
+    })
+    .in("did", ids);
+  return await supabase
+    .from("document_v2")
+    .update({
+      is_del: false,
+    })
+    .in("id", ids);
 }
 
 export async function getShareMenus() {
@@ -50,7 +95,8 @@ export async function getShareMenus() {
     )
     .order("create_at", { ascending: true })
     .neq("uid", session.user.id)
-    .eq("share.uid", session.user.id);
+    .eq("share.uid", session.user.id)
+    .eq("share.is_del", false);
 
   const { data: users } = await supabase
     .schema("next_auth")
@@ -107,9 +153,25 @@ export async function delDoc(ids: string[]) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
-  await supabase.from("permission").delete().in("did", ids);
-  await supabase.from("share").delete().in("did", ids);
-  const data = await supabase.from("document_v2").delete().in("id", ids);
+  // await supabase.from("permission").delete().in("did", ids);
+  // await supabase.from("share").delete().in("did", ids);
+  // const data = await supabase.from("document_v2").delete().in("id", ids);
+  // return data;
+  const del_at = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
+  await supabase
+    .from("share")
+    .update({
+      is_del: true,
+      del_at,
+    })
+    .in("did", ids);
+  const data = await supabase
+    .from("document_v2")
+    .update({
+      is_del: true,
+      del_at,
+    })
+    .in("id", ids);
   return data;
 }
 
@@ -118,9 +180,10 @@ export async function updateTitle(id: string, title: string) {
   if (!session?.user) return;
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
+  const update_at = dayjs().format("YYYY-MM-DD HH:mm:ss.SSS");
   return await supabase
     .from("document_v2")
-    .update({ title: title ?? "" })
+    .update({ title: title ?? "", update_at })
     .eq("id", id);
 }
 
@@ -138,6 +201,7 @@ export async function getDoc(id: string) {
     )
     .eq("id", id)
     .eq("uid", session.user.id)
+    .eq("is_del", false)
     .single<DocumentVO>();
 
   if (data) {
@@ -155,6 +219,7 @@ export async function getDoc(id: string) {
       ),share(*)`
       )
       .eq("id", permission.did)
+      .eq("is_del", false)
       .single<
         DocumentVO & {
           share?: ShareEntiry[];

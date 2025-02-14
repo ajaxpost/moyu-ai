@@ -1,6 +1,6 @@
 "use client";
 import { FC, use, MouseEvent } from "react";
-import { Ellipsis, Plus, Trash2 } from "lucide-react";
+import { Ellipsis, Plus, Trash2, File } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -88,14 +88,14 @@ const MenuItem: FC<IProps> = ({
         onClick={() => handlerClick(id)}
       >
         <div className="cursor-pointer flex-auto overflow-hidden py-1.5 px-0.5 flex items-center">
-          <span
-            className="truncate flex-auto"
+          <File
+            size={16}
+            className="mr-1"
             style={{
-              marginLeft: level === 0 ? 16 : level * 24,
+              marginLeft: level * 8,
             }}
-          >
-            {title || "<无标题>"}
-          </span>
+          />
+          <span className="truncate flex-auto">{title || "<无标题>"}</span>
         </div>
         {!currentShare && (
           <>
