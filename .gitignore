@@ -43,4 +43,7 @@ next-env.d.ts
 
 _moyu_
 .npmrc
-
+moyu-server/data/
+moyu-server/.env.*
+!moyu-server/.env.example
+moyu-server/node_modules/

@@ -10,7 +10,7 @@ import { updateTitle } from "@/actions/menu";
 import { isEnter } from "@/shared/hotkey";
 import { useStore } from "@/store/menu";
 import { useStore as useEditorStore } from "@/store/editor";
-import { DocumentVO, isHomeId } from "@/shared";
+import { DocumentVO, isHomeId, WS_Provider_URL } from "@/shared";
 import { isEmpty } from "lodash-es";
 import { Session } from "next-auth";
 import { PermissionEnum, PowerEnum } from "@/shared/enum";
@@ -86,13 +86,15 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
   }, []);
 
   useEffect(() => {
+    setFooterShow(false);
+    setCollabState(WebSocketStatus.Connecting);
     const timer = setTimeout(() => {
       setFooterShow(true);
-    }, 200);
+    }, 800);
     return () => {
       clearTimeout(timer);
     };
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     if (!userId || !id) return;
@@ -104,7 +106,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
       token = userId;
     }
     const provider = new HocuspocusProvider({
-      url: "ws://112.126.23.48:9090",
+      url: WS_Provider_URL,
       name: `doc_${id}`,
       document: ydoc,
       token,
