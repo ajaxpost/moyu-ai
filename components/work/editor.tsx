@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, KeyboardEvent, useRef } from "react";
+import { useEffect, KeyboardEvent, useRef, useState } from "react";
 import { useBlockEditor } from "@/hooks/useBlockEditor";
 import { EditorContent } from "@tiptap/react";
 import { useStore as useEditorStore } from "@/store/editor";
@@ -15,7 +15,8 @@ import { TableColumnMenu, TableRowMenu } from "@/extensions/table/menus";
 import SidePanel from "./side-panel";
 import { emitter, EventEnum } from "@/shared/utils/event";
 import "./editor.scss";
-import { EDITOR_TEMPLATE } from "@/shared";
+import { EDITOR_TEMPLATE, isHomeId } from "@/shared";
+import { useStore } from "@/store/menu";
 
 interface IProps {
   provider?: HocuspocusProvider;
@@ -31,6 +32,7 @@ export default function Editor({
   isReadonly,
 }: IProps) {
   const menuContainerRef = useRef(null);
+  const [loading, setLoading] = useState(true);
   const { editor, users, characters, toc } = useBlockEditor({
     provider,
     user: session?.user || {
@@ -41,6 +43,9 @@ export default function Editor({
     },
     isReadonly,
   });
+  const activeItem = useStore((state) => state.activeItem);
+
+  const id = activeItem?.id === isHomeId ? undefined : activeItem?.id;
 
   useEffect(() => {
     if (!editor) return;
@@ -64,6 +69,25 @@ export default function Editor({
       });
     }
   }, [users, collabState, characters]);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [id]);
+
+  useEffect(() => {
+    if (editor && collabState === WebSocketStatus.Connected && provider) {
+      if (characters > 0) {
+        setLoading(false);
+      } else {
+        const timer = setTimeout(() => {
+          setLoading(false);
+        }, 600);
+        return () => {
+          clearTimeout(timer);
+        };
+      }
+    }
+  }, [collabState, provider, editor, characters]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
     if (isSave(e)) {
@@ -91,7 +115,7 @@ export default function Editor({
     }
   };
 
-  return collabState !== WebSocketStatus.Connected || !provider || !editor ? (
+  return loading || !editor ? (
     <>
       <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />
       <Skeleton className="w-full h-[20px] rounded-md mb-2 mx-10" />

@@ -1,0 +1,15 @@
+{
+  "name": "moyu-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@hocuspocus/extension-database": "^2.15.2",
+    "@hocuspocus/extension-logger": "^2.15.2",
+    "@hocuspocus/server": "^2.15.0",
+    "dotenv": "^16.4.7",
+    "hocuspocus-extension-postgres": "^0.1.1",
+    "postgres": "^3.4.5",
+    "yjs": "^13.6.20"
+  }
+}

@@ -60,6 +60,8 @@ export function addMenuItem(
     permission: {
       permission: PermissionEnum.PRIVATE,
     },
+    is_del: false,
+    del_at: "",
   };
   if (!pid) return [..._data, defaultItem];
   const findChild = (data: DocumentVO[]) => {

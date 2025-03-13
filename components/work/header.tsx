@@ -44,6 +44,7 @@ export default function Header({
 }: IProps) {
   const { id: _id } = useParams();
   const [_permission, $permission] = useState(String(permission));
+  const [loading, setLoading] = useState(false);
   const { users, collabState, characters } = useStore(
     useShallow((state) => ({
       users: state.users,
@@ -51,7 +52,6 @@ export default function Header({
       characters: state.characters,
     }))
   );
-
   const activeItem = useMenuStore((state) => state.activeItem);
   const id = (activeItem?.id ?? _id ?? "") as string;
 
@@ -60,6 +60,25 @@ export default function Header({
   useEffect(() => {
     $permission(String(permission));
   }, [permission]);
+
+  useEffect(() => {
+    setLoading(true);
+  }, [id]);
+
+  useEffect(() => {
+    if (collabState === WebSocketStatus.Connected && users.length) {
+      if (characters > 0) {
+        setLoading(false);
+      } else {
+        const timer = setTimeout(() => {
+          setLoading(false);
+        }, 600);
+        return () => {
+          clearTimeout(timer);
+        };
+      }
+    }
+  }, [collabState, characters, users]);
 
   const isPublic = useMemo(
     () =>
@@ -84,7 +103,7 @@ export default function Header({
         <Link href="/" target="_parent" prefetch scroll={false}>
           <Image src="/icon.png" width={38} height={40} alt="logo" />
         </Link>
-        {!users.length && collabState === WebSocketStatus.Connecting ? (
+        {loading ? (
           <Skeleton className="w-[100px] h-[24px] rounded-full ml-5" />
         ) : (
           <>
