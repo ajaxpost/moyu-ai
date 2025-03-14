@@ -138,7 +138,7 @@ export const ExtensionKit = ({ setToc }: IProps) => [
             })
             .run();
         }, 0);
-        const result = await uploadImage(file);
+        const result = await uploadImage(file, true);
         const url = result?.url;
         if (url) {
           return currentEditor

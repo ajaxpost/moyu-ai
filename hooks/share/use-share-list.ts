@@ -13,7 +13,7 @@ export function useShareList(did?: string) {
       : undefined,
     (uri) => fetch(uri).then<ShareListResp>((ret) => ret.json()),
     {
-      // revalidateOnFocus: false,
+      revalidateOnFocus: false,
     }
   );
 }

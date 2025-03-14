@@ -27,12 +27,13 @@ const ShareLink: FC = () => {
   useEffect(() => {
     const userId = session.data?.user.id;
     const did = activeItem?.id;
-
     shareToken({
       userId,
       did,
       power,
     }).then((ret) => {
+      console.log(ret, "ret_token>>>");
+
       setToken(ret);
     });
   }, [power, activeItem?.id, session.data?.user?.id]);

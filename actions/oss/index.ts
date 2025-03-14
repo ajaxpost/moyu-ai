@@ -9,13 +9,14 @@ const client = new OSS({
   bucket: OSS_BUCKET,
 });
 
-export const uploadImage = async (file: File) => {
+export const uploadImage = async (file: File, isPaste?: boolean) => {
   try {
     const blob = new Blob([file]);
     const arrayBuffer = await blob.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-    const result = await client.put(`images/${file.name}`, buffer);
-    console.log(`上传成功 「${file.name}」 `, result);
+    const filename = isPaste ? `${Date.now()}.${file.name}` : file.name;
+    const result = await client.put(`images/${filename}`, buffer);
+    console.log(`上传成功 「${filename}」 `, result);
     return result;
   } catch (error) {
     console.log(error);
