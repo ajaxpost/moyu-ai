@@ -28,6 +28,7 @@ export const metadata: Metadata = {
   keywords: "摸鱼记,在线文档,在线编辑,在线协同,在线分享,在线协作",
   metadataBase: new URL("http://www.moyu-web.cn"),
   verification: {
+    google: "Hns8ZIGtqxzMBjmfEvNm7P9KfYuzpojYV-lV5x9V7SE",
     other: {
       "baidu-site-verification": "codeva-31tViha9XN",
     },
