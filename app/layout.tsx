@@ -25,6 +25,13 @@ const pmzdcst = localFont({
 export const metadata: Metadata = {
   title: "摸鱼记📝",
   description: "摸鱼记📝--一个在线的在线文档",
+  keywords: "摸鱼记,在线文档,在线编辑,在线协同,在线分享,在线协作",
+  metadataBase: new URL("http://www.moyu-web.cn"),
+  verification: {
+    other: {
+      "baidu-site-verification": "codeva-31tViha9XN",
+    },
+  },
 };
 
 export const dynamic = "force-dynamic";
