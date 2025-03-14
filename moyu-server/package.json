@@ -8,8 +8,9 @@
     "@hocuspocus/extension-logger": "^2.15.2",
     "@hocuspocus/server": "^2.15.0",
     "dotenv": "^16.4.7",
-    "hocuspocus-extension-postgres": "^0.1.1",
     "postgres": "^3.4.5",
+    "winston": "^3.17.0",
+    "winston-daily-rotate-file": "^5.0.0",
     "yjs": "^13.6.20"
   }
 }

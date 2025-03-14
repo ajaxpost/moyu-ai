@@ -1,8 +1,8 @@
 import { Server } from "@hocuspocus/server";
 import { Logger } from "@hocuspocus/extension-logger";
-// import { Postgres } from "hocuspocus-extension-postgres";
 import dotenv from "dotenv";
 import { Postgres } from "./postgres.mjs";
+import { logger as WinLogger } from "./logger.mjs";
 
 dotenv.config({
   path: "./.env.production",
@@ -18,7 +18,7 @@ const postgres = new Postgres({
 
 const logger = new Logger({
   log: (message) => {
-    console.log(message, "message");
+    WinLogger.info(message);
   },
 });
 
