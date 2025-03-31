@@ -98,7 +98,7 @@ export default function Header({
   };
 
   return (
-    <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1 justify-between items-center mt-2">
+    <header className="flex text-secondary-foreground my-2 mx-3 bg-ground pb-1 justify-between items-center mt-[8px]">
       <div className="text-start inline-flex items-center">
         <Link href="/" target="_parent" prefetch scroll={false}>
           <Image src="/icon.png" width={38} height={40} alt="logo" />

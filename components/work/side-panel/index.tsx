@@ -72,8 +72,8 @@ const SidePanel: FC<IProps> = ({ toc, editor }) => {
 
   return (
     <div
-      className={`fixed right-0 ${
-        visible ? "top-[56px]" : "top-20"
+      className={`fixed ${
+        visible ? "top-[56px] right-0" : "top-20 right-4"
       } max-w-[305px] h-[calc(100%-56px)] bg-background z-[1]`}
     >
       <div
