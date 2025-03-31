@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import NavigationEvents from "@/components/navigation-events";
 import localFont from "next/font/local";
 import "./globals.css";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Script id="baidu-count">
+        {`
+  var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?3a9efafd375f2803c92f811355f9cc54";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+`}
+      </Script>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pmzdcst.variable} antialiased`}
       >

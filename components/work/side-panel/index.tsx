@@ -36,7 +36,7 @@ const SidePanel: FC<IProps> = ({ toc, editor }) => {
     const alignRight = countAlignRight();
     document.body.style.setProperty(
       "--viewer-center-align-right",
-      isVisible ? alignRight : "0px"
+      isVisible ? alignRight : "1rem"
     );
   };
 
