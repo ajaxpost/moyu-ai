@@ -105,3 +105,17 @@ input[type="range"] {
     @apply dark:bg-neutral-100 dark:active:bg-white;
   }
 }
+
+/* #scroll-wrap::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+#scroll-wrap::-webkit-scrollbar-thumb {
+  background: red;
+  border-radius: 4px;
+}
+
+#scroll-wrap::-webkit-scrollbar-track {
+  background: yellow;
+} */
