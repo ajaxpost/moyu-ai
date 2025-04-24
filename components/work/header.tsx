@@ -36,15 +36,16 @@ import Share from "./share/share";
 interface IProps {
   permission?: PermissionEnum;
   isAdmin: boolean;
+  isSync: boolean;
 }
 
 export default function Header({
   permission = PermissionEnum.PRIVATE,
   isAdmin,
+  isSync,
 }: IProps) {
   const { id: _id } = useParams();
   const [_permission, $permission] = useState(String(permission));
-  const [loading, setLoading] = useState(false);
   const { users, collabState, characters } = useStore(
     useShallow((state) => ({
       users: state.users,
@@ -60,25 +61,6 @@ export default function Header({
   useEffect(() => {
     $permission(String(permission));
   }, [permission]);
-
-  useEffect(() => {
-    setLoading(true);
-  }, [id]);
-
-  useEffect(() => {
-    if (collabState === WebSocketStatus.Connected && users.length) {
-      if (characters > 0) {
-        setLoading(false);
-      } else {
-        const timer = setTimeout(() => {
-          setLoading(false);
-        }, 600);
-        return () => {
-          clearTimeout(timer);
-        };
-      }
-    }
-  }, [collabState, characters, users]);
 
   const isPublic = useMemo(
     () =>
@@ -103,7 +85,7 @@ export default function Header({
         <Link href="/" target="_parent" prefetch scroll={false}>
           <Image src="/icon.png" width={38} height={40} alt="logo" />
         </Link>
-        {loading ? (
+        {!isSync ? (
           <Skeleton className="w-[100px] h-[24px] rounded-full ml-5" />
         ) : (
           <>

@@ -34,6 +34,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
   );
   const [isReadonly, setIsReadonly] = useState(true);
   const [footerShow, setFooterShow] = useState(false);
+  const [isSync, setIsSync] = useState(false);
   const activeItem = useStore((state) => state.activeItem);
 
   const id = activeItem?.id === isHomeId ? undefined : activeItem?.id;
@@ -121,6 +122,14 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
           setIsReadonly(false);
         }
       },
+      onDestroy() {
+        setCollabState(WebSocketStatus.Disconnected);
+        setIsSync(false);
+      },
+      onSynced() {
+        // 文档同步完成
+        setIsSync(true);
+      },
     });
     setProvider(provider);
     return () => {
@@ -168,7 +177,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
 
   return (
     <div className="relative flex flex-col flex-1 h-full overflow-hidden">
-      <Header permission={permission} isAdmin={isAdmin} />
+      <Header permission={permission} isAdmin={isAdmin} isSync={isSync} />
       <div
         className="flex overflow-auto relative z-10"
         style={{
@@ -200,6 +209,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
             collabState={collabState}
             session={session}
             isReadonly={isReadonly}
+            isSync={isSync}
           />
         </div>
         {footerShow &&
