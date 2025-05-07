@@ -118,7 +118,7 @@ const RecycleBin: FC = () => {
                 return (
                   <TableRow key={item.id}>
                     <TableCell className="font-medium p-4">
-                      {item.title ?? "<无标题>"}
+                      {item.title || "<无标题>"}
                     </TableCell>
                     <TableCell>{diff}</TableCell>
                     <TableCell className="text-right flex gap-1 items-center">
