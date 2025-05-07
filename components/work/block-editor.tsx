@@ -33,7 +33,6 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
     provider ? WebSocketStatus.Connecting : WebSocketStatus.Disconnected
   );
   const [isReadonly, setIsReadonly] = useState(true);
-  const [footerShow, setFooterShow] = useState(false);
   const [isSync, setIsSync] = useState(false);
   const activeItem = useStore((state) => state.activeItem);
 
@@ -85,17 +84,6 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
       }
     );
   }, []);
-
-  useEffect(() => {
-    setFooterShow(false);
-    setCollabState(WebSocketStatus.Connecting);
-    const timer = setTimeout(() => {
-      setFooterShow(true);
-    }, 800);
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [id]);
 
   useEffect(() => {
     if (!userId || !id) return;
@@ -212,9 +200,7 @@ const BlockEditor: FC<IProps> = ({ doc, session }) => {
             isSync={isSync}
           />
         </div>
-        {footerShow &&
-          collabState === WebSocketStatus.Connected &&
-          characters === 0 && <EditorFooter />}
+        {isSync && characters === 0 && <EditorFooter />}
       </div>
     </div>
   );
