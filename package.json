@@ -89,6 +89,7 @@
     "react-easy-crop": "^5.2.0",
     "react-hook-form": "^7.54.2",
     "react-hot-toast": "^2.4.1",
+    "react-image-previewer": "^1.1.6",
     "react-resizable-panels": "^2.1.7",
     "swr": "^2.2.5",
     "tailwind-merge": "^2.5.5",
