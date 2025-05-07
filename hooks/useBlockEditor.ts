@@ -44,7 +44,7 @@ export const useBlockEditor = ({
           ? CollaborationCursor.configure({
               provider,
               user: {
-                name: user?.email ?? user?.name,
+                name: user?.email || user?.name,
                 image: user.image,
                 color: randomElement(userColors),
               },
