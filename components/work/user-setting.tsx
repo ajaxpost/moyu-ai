@@ -48,34 +48,47 @@ interface CropAvatarProps {
   onChange: (v: any) => void;
 }
 
+const formSchema = z.object({
+  name: z
+    .string()
+    .min(1, { message: "Name is required" })
+    .max(50, { message: "Name must be 50 or fewer characters long" }),
+  // email: session?.user.email
+  //   ? z.string().email({ message: "Invalid email address" })
+  //   : z.string(),
+  avatar: z.string().url({ message: "Invalid URL for avatar" }),
+});
+
 const UserSetting: FC<IProps> = ({ session }) => {
   const fileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const [uploadUrl, setUploadUrl] = useState<string>();
   const [cropOpen, setCropOpen] = useState(false);
 
-  const formSchema = z.object({
-    name: z
-      .string()
-      .min(1, { message: "Name is required" })
-      .max(50, { message: "Name must be 50 or fewer characters long" }),
-    email: session?.user.email
-      ? z.string().email({ message: "Invalid email address" })
-      : z.string(),
-    avatar: z.string().url({ message: "Invalid URL for avatar" }),
-  });
+  // const formSchema = z.object({
+  //   name: z
+  //     .string()
+  //     .min(1, { message: "Name is required" })
+  //     .max(50, { message: "Name must be 50 or fewer characters long" }),
+  //   email: session?.user.email
+  //     ? z.string().email({ message: "Invalid email address" })
+  //     : z.string(),
+  //   avatar: z.string().url({ message: "Invalid URL for avatar" }),
+  // });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: session?.user.name || "",
-      email: session?.user.email || "",
+      // email: session?.user.email || "",
       avatar: session?.user.image || "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (session?.user.id) {
+      setSubmitLoading(true);
       const data = await saveUser({
         id: session?.user.id,
         ...values,
@@ -84,6 +97,7 @@ const UserSetting: FC<IProps> = ({ session }) => {
         window.location.reload();
       } else {
         alert("更新信息失败，请稍后再试");
+        setLoading(false);
       }
     }
   }
@@ -132,7 +146,7 @@ const UserSetting: FC<IProps> = ({ session }) => {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-              {session?.user.email ? (
+              {/* {session?.user.email ? (
                 <FormField
                   control={form.control}
                   name="email"
@@ -147,8 +161,7 @@ const UserSetting: FC<IProps> = ({ session }) => {
                     </FormItem>
                   )}
                 />
-              ) : null}
-
+              ) : null} */}
               <FormField
                 control={form.control}
                 name="name"
@@ -201,7 +214,13 @@ const UserSetting: FC<IProps> = ({ session }) => {
                   );
                 }}
               />
-              <Button type="submit">保存</Button>
+              <Button type="submit" disabled={submitLoading}>
+                {submitLoading ? (
+                  <LoaderCircle className="!size-3 animate-spin" />
+                ) : (
+                  "保存"
+                )}
+              </Button>
             </form>
           </Form>
         </DialogContent>
