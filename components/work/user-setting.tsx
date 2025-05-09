@@ -66,6 +66,17 @@ const UserSetting: FC<IProps> = ({ session }) => {
   const [uploadUrl, setUploadUrl] = useState<string>();
   const [cropOpen, setCropOpen] = useState(false);
 
+  // const formSchema = z.object({
+  //   name: z
+  //     .string()
+  //     .min(1, { message: "Name is required" })
+  //     .max(50, { message: "Name must be 50 or fewer characters long" }),
+  //   email: session?.user.email
+  //     ? z.string().email({ message: "Invalid email address" })
+  //     : z.string(),
+  //   avatar: z.string().url({ message: "Invalid URL for avatar" }),
+  // });
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
