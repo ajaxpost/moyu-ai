@@ -49,7 +49,7 @@ export const themeColors = [
 
 export const OSS_BUCKET = "moyu-assert";
 
-export const WS_Provider_URL = "ws://112.126.23.48:9090";
+export const WS_Provider_URL = "ws://49.233.38.165:9090";
 // export const WS_Provider_URL = "ws://localhost:9090";
 
 export * from "./options";
